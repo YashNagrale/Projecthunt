@@ -29,7 +29,6 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
     formState: { errors, isValid, isDirty },
   } = methods;
   const createPost = () => {};
-  console.log(isValid);
   return (
     <FormProvider {...methods}>
       <div className="md:flex-row flex flex-col flex-1 w-full gap-2 p-2 h-full">
