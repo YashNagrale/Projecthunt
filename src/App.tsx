@@ -11,7 +11,7 @@ function App() {
       <Outlet />
       {/* </main> */}
       <Toaster
-        position="top-center"
+        position="top-right"
         swipeDirections={["top", "right", "left"]}
       />
     </ThemeProvider>

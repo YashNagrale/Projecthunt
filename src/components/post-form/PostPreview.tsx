@@ -26,13 +26,13 @@ function PostPreview(): React.JSX.Element {
         />
       </div>
       <div id="titlePreview" className="text-xl font-bold">
-        <p>Title: {projectTitle || `My First Project`}</p>
+        <p>Title: {projectTitle || `Your project title here`}</p>
       </div>
       <div id="linkPreview" className="flex gap-x-2">
         <Input
           className="border-2"
-          value={projectLink || "https://myproject.com"}
-          disabled
+          value={projectLink || "https://example.com"}
+          readOnly
         />
         <Button variant={"outline"} className="font-semibold">
           Visit now {<LucideExternalLink />}
@@ -42,11 +42,7 @@ function PostPreview(): React.JSX.Element {
         <p>
           <b className="text-foreground">Description:</b>{" "}
           {projectDescription ||
-            `My First Project is a beginner-friendly
-          web application built to explore and learn modern development
-          practices. It comes with a clean layout, responsive design, and simple
-          features that demonstrate core concepts. It's perfect for showcasing
-          your first steps into full stack development.`}
+            `This is a preview of your project description. Describe what your project does, its main features, and what makes it useful or interesting. Keep it clear and informative for anyone checking it out.`}
         </p>
       </div>
     </div>
