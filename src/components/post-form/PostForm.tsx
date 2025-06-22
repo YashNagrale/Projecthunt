@@ -7,6 +7,7 @@ import projectService from "../appwrite/projectService";
 import { useNavigate } from "react-router-dom";
 import { LoadingSpinner } from "@/components";
 import { useAppSelector } from "@/hooks/useStore";
+import { useTheme } from "../theme-provider";
 
 type FormInput = {
   title: string;
@@ -23,6 +24,7 @@ type PostFormProps = {
 
 function PostForm({ post }: PostFormProps): React.JSX.Element {
   const { userData } = useAppSelector((state) => state.auth);
+  const { theme } = useTheme();
   const [isCancelDisabled, setIsCancelDisabled] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -189,7 +191,14 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                 }`}
                 type="submit"
               >
-                {post ? "Update" : "Post"} {loading ? <LoadingSpinner /> : ""}
+                {post ? "Update" : "Post"}{" "}
+                {loading ? (
+                  <LoadingSpinner
+                    classes={`${theme === "light" ? "text-white" : ""}`}
+                  />
+                ) : (
+                  ""
+                )}
               </Button>
             </div>
           </form>
