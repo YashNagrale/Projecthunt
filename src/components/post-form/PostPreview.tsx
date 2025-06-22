@@ -28,6 +28,9 @@ function PostPreview({ previewLink }: PostPreviewProps): React.JSX.Element {
 
     setHasError(false);
   }, [previewLink]);
+  const fixedLink = projectLink?.startsWith("http")
+    ? projectLink
+    : `https://${projectLink}`;
 
   return (
     <div
@@ -63,12 +66,25 @@ function PostPreview({ previewLink }: PostPreviewProps): React.JSX.Element {
       <div id="linkPreview" className="flex gap-x-2">
         <Input
           className="border-2"
-          value={projectLink || "https://example.com"}
-          readOnly
+          value={projectLink}
+          placeholder="https://example.com"
+          disabled
         />
-        <Button variant={"outline"} className="font-semibold">
-          Visit now {<LucideExternalLink />}
-        </Button>
+        {projectLink ? (
+          <a href={fixedLink} target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" className="font-semibold cursor-pointer">
+              Visit now <LucideExternalLink />
+            </Button>
+          </a>
+        ) : (
+          <Button
+            variant="outline"
+            className="font-semibold cursor-not-allowed"
+            disabled
+          >
+            Visit now <LucideExternalLink />
+          </Button>
+        )}
       </div>
       <div id="descriptionPreview" className="text-muted-foreground">
         <p>

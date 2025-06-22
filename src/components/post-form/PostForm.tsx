@@ -95,7 +95,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
             onSubmit={handleSubmit(createPost)}
             className="py-1  flex flex-col gap-y-3 h-full"
           >
-            <div className=" flex flex-col gap-y-2">
+            <div className="flex flex-col gap-y-2">
               <label
                 htmlFor="titleInput"
                 className="font-lg text-muted-foreground font-semibold"
@@ -118,7 +118,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                 <p className="text-red-500 text-sm">{errors.title?.message}</p>
               )}
             </div>
-            <div className=" flex flex-col gap-y-2">
+            <div className="flex flex-col gap-y-2">
               <label
                 htmlFor="linkInput"
                 className="font-lg text-muted-foreground font-semibold"
@@ -165,8 +165,8 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                     message: "Minimum 10 characters required.",
                   },
                   maxLength: {
-                    value: 1000,
-                    message: "Maximum 1000 characters allowed.",
+                    value: 500,
+                    message: "Maximum 500 characters allowed.",
                   },
                 })}
               />
@@ -177,6 +177,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
               )}
             </div>
             <div className="flex items-center justify-end gap-2">
+              {/* TODO: Cancel to dashboard*/}
               <Button
                 disabled={isCancelDisabled}
                 variant="outline"
