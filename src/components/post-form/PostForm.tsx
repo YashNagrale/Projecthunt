@@ -23,11 +23,27 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
       description: post?.description || "",
     },
   });
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isValid, isDirty },
   } = methods;
+
+  const rawLink = watch("link");
+
+  const getPreviewLink = (link: string) => {
+    const trimmed = link.trim();
+    const isValid =
+      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/\S*)?$/.test(trimmed);
+    if (!isValid) return "";
+
+    return trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+  };
+
+  const validLink = getPreviewLink(rawLink);
+
   const createPost = () => {};
   return (
     <FormProvider {...methods}>
@@ -135,7 +151,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
             </div>
           </form>
         </div>
-        <PostPreview />
+        <PostPreview previewLink={validLink} />
       </div>
     </FormProvider>
   );

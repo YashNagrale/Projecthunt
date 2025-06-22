@@ -4,12 +4,17 @@ type LoaderProps = {
   size?: number;
   fullPage?: boolean;
   speed?: string;
+  classes?: string;
 };
 
-const LoadingSpinner = ({ size = 30, fullPage = false }: LoaderProps) => {
+const LoadingSpinner = ({
+  size = 30,
+  fullPage = false,
+  classes = "",
+}: LoaderProps) => {
   const spinner = (
     <Loader
-      className="animate-spin text-muted-foreground"
+      className={`animate-spin text-muted-foreground ${classes}`}
       style={{ animationDuration: "1.2s" }}
       width={size}
       height={size}
