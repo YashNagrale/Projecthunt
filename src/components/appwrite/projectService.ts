@@ -8,7 +8,7 @@ interface ProjectCredentials {
   userId: string;
   project$Id: string;
   likesCount?: number;
-  likedBy: string[];
+  likedBy?: string[];
   clicksCount?: number;
   clickedBy?: string[];
 }

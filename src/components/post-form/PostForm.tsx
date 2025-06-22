@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import PostPreview from "./PostPreview";
 import { Button, Input, Textarea } from "../ui";
 import { FormProvider, useForm } from "react-hook-form";
+import useAsync from "@/hooks/useAsync";
+import projectService from "../appwrite/projectService";
+import { useNavigate } from "react-router-dom";
+import { LoadingSpinner } from "@/components";
+import { useAppSelector } from "@/hooks/useStore";
 
 type FormInput = {
   title: string;
   link: string;
   description: string;
+  project$Id: string;
+  userId?: string;
+  $id: string;
 };
 
 type PostFormProps = {
@@ -14,6 +22,10 @@ type PostFormProps = {
 };
 
 function PostForm({ post }: PostFormProps): React.JSX.Element {
+  const { userData } = useAppSelector((state) => state.auth);
+  const [isCancelDisabled, setIsCancelDisabled] = useState<boolean>(false);
+  const navigate = useNavigate();
+
   const methods = useForm<FormInput>({
     mode: "onChange",
     delayError: 800,
@@ -21,6 +33,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
       title: post?.title || "",
       link: post?.link || "",
       description: post?.description || "",
+      project$Id: post?.$id,
     },
   });
 
@@ -33,7 +46,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
 
   const rawLink = watch("link");
 
-  const getPreviewLink = (link: string) => {
+  const getPreviewLink = (link: string): string => {
     const trimmed = link.trim();
     const isValid =
       /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/\S*)?$/.test(trimmed);
@@ -44,7 +57,31 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
 
   const validLink = getPreviewLink(rawLink);
 
-  const createPost = () => {};
+  const { loading, execute } = useAsync(async (postData: FormInput) => {
+    let dbPost;
+    if (post) {
+      dbPost = await projectService.updateProject(postData);
+    } else {
+      dbPost = await projectService.createProject({
+        ...postData,
+        userId: (userData as { $id: string })?.$id,
+      });
+    }
+    if (dbPost) {
+      navigate(`/post/${dbPost.$id}`);
+    }
+  });
+  const createPost = async (postData: FormInput) => {
+    setIsCancelDisabled(true);
+    try {
+      await execute(postData);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsCancelDisabled(false);
+    }
+  };
+
   return (
     <FormProvider {...methods}>
       <div className="md:flex-row flex flex-col flex-1 w-full gap-2 p-2 h-full">
@@ -138,7 +175,13 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
               )}
             </div>
             <div className="flex items-center justify-end gap-2">
-              <Button variant="outline">Cancel</Button>
+              <Button
+                disabled={isCancelDisabled}
+                variant="outline"
+                className="cursor-pointer"
+              >
+                Cancel
+              </Button>
               <Button
                 disabled={!isDirty || !isValid}
                 className={`cursor-pointer ${
@@ -146,7 +189,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                 }`}
                 type="submit"
               >
-                {post ? "Update" : "Post"}
+                {post ? "Update" : "Post"} {loading ? <LoadingSpinner /> : ""}
               </Button>
             </div>
           </form>
