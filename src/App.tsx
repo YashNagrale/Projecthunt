@@ -1,4 +1,4 @@
-import { Header, ThemeProvider } from "@/components";
+import { Header, PostCard, ThemeProvider } from "@/components";
 import { Toaster } from "./components/ui/sonner";
 import { Outlet } from "react-router-dom";
 
@@ -10,6 +10,7 @@ function App() {
         swipeDirections={["top", "right", "left"]}
       />
       <Header />
+      <PostCard />
       {/* <main className="w-full h-full"> */}
       <Outlet />
       {/* </main> */}

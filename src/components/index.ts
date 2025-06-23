@@ -8,3 +8,4 @@ export { default as LoadingSpinner } from "./LoadingSpinner";
 export { default as PostForm } from "./post-form/PostForm";
 export { default as PostPreview } from "./post-form/PostPreview";
 export { default as Footer } from "./Footer";
+export { PostCard } from "./PostCard";
