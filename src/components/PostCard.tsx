@@ -35,7 +35,7 @@ export function PostCard() {
           Instagram - social media app
         </CardTitle>
 
-        <CardDescription className="text-md py-1 overflow-hidden line-clamp-3 h-20">
+        <CardDescription className="text-md pt-1 overflow-hidden line-clamp-3 h-20">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur
           corrupti, saepe soluta tempora recusandae et maxime distinctio
           officiis. Sit, optio. Dignissimos eius odit sequi. Optio harum a

@@ -109,8 +109,12 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                 {...register("title", {
                   required: true,
                   minLength: {
-                    value: 3,
-                    message: "minimum 3 characters are required.",
+                    value: 5,
+                    message: "Minimum 5 characters required.",
+                  },
+                  maxLength: {
+                    value: 100,
+                    message: "Maximum 100 characters allowed.",
                   },
                 })}
               />
