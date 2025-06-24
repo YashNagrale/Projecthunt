@@ -20,7 +20,7 @@ export function PostCard() {
           className="absolute top-1 left-1 shadow-2xl z-10"
           variant={"default"}
         >
-          Clicks: 0
+          <p className="font-semibold">Clicks: 0</p>
         </Badge>
 
         <img
@@ -52,14 +52,20 @@ export function PostCard() {
 
       <CardFooter className="px-1 flex justify-between text-sm">
         <Button className="rounded-full font-semibold" variant={"outline"}>
-          <p className="text-muted-foreground">Posted by:</p> You
+          <p className="text-muted-foreground">
+            Posted by: <span className="text-secondary-foreground">You</span>
+          </p>
         </Button>
         <div className="space-x-1">
           <Button className="rounded-full font-semibold" variant={"outline"}>
-            <p className="text-muted-foreground">Likes:</p> 0
+            <p className="text-muted-foreground">
+              Likes: <span className="text-secondary-foreground">0</span>
+            </p>
           </Button>
           <Button className="rounded-full font-semibold" variant={"outline"}>
-            <p className="text-muted-foreground">Comments:</p> 0
+            <p className="text-muted-foreground">
+              Comments: <span className="text-secondary-foreground">0</span>
+            </p>
           </Button>
         </div>
       </CardFooter>
