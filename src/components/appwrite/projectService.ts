@@ -1,4 +1,4 @@
-import { Client, Databases, ID } from "appwrite";
+import { Client, Databases, ID, Query } from "appwrite";
 import config from "./config";
 
 interface ProjectCredentials {
@@ -168,6 +168,19 @@ export class ProjectService {
       );
     } catch (error) {
       console.log("Appwrite service :: listProjects", error);
+      throw error;
+    }
+  }
+
+  async listUserProjects(userId: string) {
+    try {
+      return this.databases.listDocuments(
+        config.databaseId,
+        config.projectCollectionId,
+        [Query.equal("userId", userId)]
+      );
+    } catch (error) {
+      console.log("Appwrite service :: listUserProjects", error);
       throw error;
     }
   }
