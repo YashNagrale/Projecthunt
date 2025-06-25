@@ -14,7 +14,7 @@ const LoadingSpinner = ({
 }: LoaderProps) => {
   const spinner = (
     <Loader
-      className={`animate-spin text-foreground ${classes}`}
+      className={`animate-spin text-[#8e8e93] ${classes}`}
       style={{ animationDuration: "1.2s" }}
       width={size}
       height={size}
