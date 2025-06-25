@@ -17,14 +17,14 @@ export function PostCard() {
     <Card className="w-full max-w-md border-2 rounded-xl mx-auto mt-16 p-0 pb-1 gap-2">
       <CardHeader className="block relative rounded-2xl border-b-2 p-0">
         <Badge
-          className="absolute top-1 left-1 shadow-2xl z-10"
+          className="absolute cursor-default select-none top-1 left-1 shadow-2xl z-10"
           variant={"default"}
         >
           <p className="font-semibold">Clicks: 0</p>
         </Badge>
 
         <img
-          className={`rounded-2xl w-full h-48 object-cover ${
+          className={`rounded-2xl w-full h-44 object-cover ${
             theme === "dark" ? "invert-0" : "invert-100"
           }`}
           src={dummyImg}
@@ -38,11 +38,11 @@ export function PostCard() {
       </CardHeader>
 
       <CardContent className="px-2 pb-3 space-y-1 border-b-2">
-        <CardTitle className="text-xl font-semibold">
+        <CardTitle className="text-xl text-primary font-semibold m-0">
           Social media platform
         </CardTitle>
 
-        <CardDescription className="text-md pt-1 overflow-hidden line-clamp-3 h-20">
+        <CardDescription className="text-md overflow-hidden line-clamp-3 h-[4.3rem]">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur
           corrupti, saepe soluta tempora recusandae et maxime distinctio
           officiis. Sit, optio. Dignissimos eius odit sequi. Optio harum a
