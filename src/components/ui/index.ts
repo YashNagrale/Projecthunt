@@ -13,3 +13,4 @@ export { Label } from "./label";
 export { Toaster } from "./sonner";
 export { Textarea } from "./textarea";
 export { Badge, badgeVariants } from "./badge";
+export { Skeleton } from "./skeleton";
