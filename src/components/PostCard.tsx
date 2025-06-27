@@ -16,7 +16,7 @@ import { LoadingSpinner } from "@/components";
 import { toast } from "sonner";
 
 interface PostCardData {
-  project$Id: string;
+  $id: string;
   clicks: number;
   comments: number;
   likes: number;
@@ -27,7 +27,7 @@ interface PostCardData {
 }
 
 export function PostCard({
-  project$Id,
+  $id,
   clicks = 0,
   comments = 0,
   likes = 0,
@@ -69,7 +69,7 @@ export function PostCard({
       onClick={() => {
         const selectedText = window.getSelection?.()?.toString();
         if (!selectedText) {
-          navigate(`/post/${project$Id}`);
+          navigate(`/post/${$id}`);
         }
       }}
       className="w-full max-w-md border-2 rounded-2xl mx-auto mt-16 p-0 pb-1 gap-2"
