@@ -1,13 +1,35 @@
 import dummyImg from "../assets/dummy-img.jpg";
 import { Badge, Button, Input } from "@/components/ui";
 import { ExternalLinkIcon, Trash2 } from "lucide-react";
-import type { JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
+import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 
+type CommentType = {
+  comment: string;
+};
 function Post(): JSX.Element {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<CommentType>({
+    mode: "onChange",
+    delayError: 600,
+  });
+  const [postData, setPostData] = useState(null);
+  const { project$Id } = useParams();
+
+  useEffect(() => {}, [postData]);
+  const handleComment = () => {};
+
   return (
     <div className="px-2 py-2 space-y-2 h-full flex flex-col justify-between">
       <div>
         <div id="img" className="relative">
+          <Badge className="absolute left-2 top-2 text-center font-semibold cursor-default select-none">
+            Clicks: 0
+          </Badge>
           <img
             src={dummyImg}
             className={`rounded-2xl border w-full object-cover h-60`}
@@ -27,10 +49,7 @@ function Post(): JSX.Element {
               Delete
             </Button>
           </div>
-          <Badge className="absolute left-2 top-2 text-center font-semibold">
-            Clicks: 0
-          </Badge>
-          <div className="flex gap-1 absolute right-2 bottom-2  shadow-2xl shadow-black">
+          <div className="flex gap-1 absolute right-2 bottom-2">
             <Button
               variant={"outline"}
               className="backdrop-blur-2xl font-semibold"
@@ -63,29 +82,47 @@ function Post(): JSX.Element {
         </div>
       </div>
 
-      <div id="comment" className="border-2 rounded-xl px-2 py-3 space-y-3">
-        <div className="flex gap-2">
+      <div className="border-2 rounded-xl px-2 py-2 space-y-3">
+        <form onClick={handleSubmit(handleComment)} className="flex gap-2 m-0">
           <Input
-            id="commentInput"
-            type="text"
-            placeholder="Enter comment"
-            className="flex-1"
+            id="comment"
+            type="comment"
+            placeholder="Leave a comment..."
+            className="flex"
+            {...register("comment", {
+              required: true,
+              minLength: {
+                value: 1,
+                message: "Minimum 1 characters are required.",
+              },
+              maxLength: {
+                value: 250,
+                message: "Maximum 250 characters are required.",
+              },
+            })}
           />
-          <Button variant="outline">Comment</Button>
-        </div>
+          <Button disabled={!isValid} type="submit" variant="outline">
+            Comment
+          </Button>
+        </form>
+        {errors.comment && (
+          <p className="text-red-500 text-sm py-1.5 m-0">
+            {errors.comment?.message}
+          </p>
+        )}
 
         <ul className="space-y-1">
           <li className="border-b px-1 py-2 flex justify-between items-center">
             <p className=" text-sm text-muted-foreground">
               Lorem ipsum dolor sit amet consectetur adipisicing.
             </p>
-            <Trash2 className="text-red-600 w-5 font-bold" />
+            <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
           </li>
           <li className="border-b px-1 py-2 flex justify-between items-center">
             <p className=" text-sm text-muted-foreground">
               Lorem ipsum dolor, sit amet consectetur adipisicing.
             </p>
-            <Trash2 className="text-red-600 w-5 font-bold" />
+            <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
           </li>
         </ul>
       </div>
