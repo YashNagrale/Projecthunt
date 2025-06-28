@@ -1,7 +1,7 @@
 import { Client, Databases, ID, Query } from "appwrite";
 import config from "./config";
 
-interface commentsCredentials {
+interface CommentsCredentials {
   title: string;
   project$Id: string;
 }
@@ -15,7 +15,7 @@ export class CommentService {
     this.databases = new Databases(this.client);
   }
 
-  async createComment({ title }: Pick<commentsCredentials, "title">) {
+  async createComment({ title }: Pick<CommentsCredentials, "title">) {
     try {
       return await this.databases.createDocument(
         config.databaseId,
@@ -29,7 +29,7 @@ export class CommentService {
     }
   }
 
-  async deleteComment({ project$Id }: Pick<commentsCredentials, "project$Id">) {
+  async deleteComment({ project$Id }: Pick<CommentsCredentials, "project$Id">) {
     try {
       return await this.databases.deleteDocument(
         config.databaseId,
