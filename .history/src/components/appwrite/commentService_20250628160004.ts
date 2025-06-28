@@ -47,7 +47,7 @@ export class CommentService {
       return await this.databases.listDocuments(
         config.databaseId,
         config.commentsCollectionId,
-        [Query.equal("projectid", project$Id), Query.orderDesc("_createdAt")]
+        [Query.equal("projectId", project$Id), Query.orderDesc("_createdAt")]
       );
     } catch (error) {
       console.log("Appwrite service :: listComments", error);

@@ -42,12 +42,13 @@ export class CommentService {
     }
   }
 
-  async listComments({ project$Id }: Pick<CommentsCredentials, "project$Id">) {
+  async listComments({project$Id}) {
     try {
       return await this.databases.listDocuments(
         config.databaseId,
         config.commentsCollectionId,
-        [Query.equal("projectid", project$Id), Query.orderDesc("_createdAt")]
+        prpoej
+        [Query.orderDesc("_createdAt")]
       );
     } catch (error) {
       console.log("Appwrite service :: listComments", error);
