@@ -10,7 +10,7 @@ import { LoadingSpinner } from "@/components";
 import commentService from "@/components/appwrite/commentService";
 
 type CommentType = {
-  comment: string;
+  title: string;
 };
 
 function Post(): JSX.Element {
@@ -51,7 +51,36 @@ function Post(): JSX.Element {
     }
   }, [project$Id, navigate, pageDataExecute, commentDataExecute]);
 
-  const handleComment = () => {};
+  const { loading: addCommentLoading, execute: addCommentExecute } = useAsync(
+    async (commentFormData: CommentType) => {
+      const session = await commentService.createComment(commentFormData);
+      if (session && project$Id) {
+        await commentDataExecute(project$Id);
+      }
+    }
+  );
+
+  const commentInput = document.getElementById("comment") as HTMLInputElement;
+
+  const addComment = async (formData: CommentType) => {
+    await addCommentExecute(formData);
+    if (commentInput) {
+      commentInput.value = "";
+    }
+  };
+
+  const { loading: deleteCommentLoading, execute: deleteCommentExecute } =
+    useAsync(async (commentId: string) => {
+      return await commentService.deleteComment({ comment$Id: commentId });
+    });
+
+  const deleteComment = async (commentId: string) => {
+    if (commentId) {
+      await deleteCommentExecute(commentId);
+    }
+  };
+
+  // TODO: Delete post, toogle like, image, navigation remaining
 
   return pageDataLoading ? (
     <LoadingSpinner fullPage />
@@ -118,14 +147,13 @@ function Post(): JSX.Element {
       </div>
 
       <div className="border-2 rounded-xl px-2 py-2 space-y-3">
-        <form onClick={handleSubmit(handleComment)} className="flex gap-2 m-0">
+        <form onClick={handleSubmit(addComment)} className="flex gap-2 m-0">
           <Input
             id="comment"
-            type="comment"
+            type="title"
             placeholder="Leave a comment..."
             className="flex"
-            {...register("comment", {
-              required: true,
+            {...register("title", {
               minLength: {
                 value: 1,
                 message: "Minimum 1 characters are required.",
@@ -136,28 +164,46 @@ function Post(): JSX.Element {
               },
             })}
           />
-          <Button disabled={!isValid} type="submit" variant="outline">
+          <Button
+            // TODO: Fix needed on disabled action
+            disabled={!isValid || addCommentLoading}
+            type="submit"
+            variant="outline"
+          >
             Comment
           </Button>
         </form>
-        {errors.comment && (
+        {errors.title && (
           <p className="text-red-500 text-sm py-1.5 m-0">
-            {errors.comment?.message}
+            {errors.title?.message}
           </p>
         )}
 
         <ul className="space-y-1">
-          {commentData?.documents.map((doc, index: number) => {
+          {commentData?.documents.map((doc) => {
             const comment = doc as unknown as { text: string; $id: string };
             return (
               <li
-                key={index}
+                key={comment.$id}
                 className="border-b px-1 py-2 flex justify-between items-center"
               >
-                <p className=" text-sm text-muted-foreground">
-                  {comment?.text}
-                </p>
-                <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
+                {commentDataLoading ? (
+                  <LoadingSpinner classes="m-auto" size={25} />
+                ) : (
+                  <>
+                    <p className=" text-sm text-muted-foreground">
+                      {comment?.text}
+                    </p>
+                    {deleteCommentLoading ? (
+                      <LoadingSpinner size={20} />
+                    ) : (
+                      <Trash2
+                        onClick={() => deleteComment(comment.$id)}
+                        className="text-red-600 hover:text-red-700 w-5 font-bold"
+                      />
+                    )}
+                  </>
+                )}
               </li>
             );
           })}

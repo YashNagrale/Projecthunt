@@ -30,7 +30,7 @@ export class CommentService {
     }
   }
 
-  async deleteComment({ comment$Id }: CommentsCredentials) {
+  async deleteComment({ comment$Id }: Pick<CommentsCredentials, "comment$Id">) {
     try {
       return await this.databases.deleteDocument(
         config.databaseId,
