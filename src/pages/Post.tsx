@@ -40,18 +40,19 @@ function Post(): JSX.Element {
     data: commentData,
     loading: commentDataLoading,
     execute: commentDataExecute,
-  } = useAsync(async () => {
-    const comment = await commentService.listComments();
-    return comment;
+  } = useAsync(async (id: string) => {
+    return await commentService.listComments({ project$Id: id });
   });
 
   useEffect(() => {
     if (project$Id) {
       pageDataExecute(project$Id);
+      commentDataExecute(project$Id);
     }
-  }, [project$Id, navigate, pageDataExecute]);
+  }, [project$Id, navigate, pageDataExecute, commentDataExecute]);
 
   const handleComment = () => {};
+
   return pageDataLoading ? (
     <LoadingSpinner fullPage />
   ) : (
@@ -146,15 +147,20 @@ function Post(): JSX.Element {
         )}
 
         <ul className="space-y-1">
-          {commentData?.map((comment: string, index: number) => (
-            <li
-              key={index}
-              className="border-b px-1 py-2 flex justify-between items-center"
-            >
-              <p className=" text-sm text-muted-foreground">{comment?.text}</p>
-              <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
-            </li>
-          ))}
+          {commentData?.documents.map((doc, index: number) => {
+            const comment = doc as unknown as { text: string; $id: string };
+            return (
+              <li
+                key={index}
+                className="border-b px-1 py-2 flex justify-between items-center"
+              >
+                <p className=" text-sm text-muted-foreground">
+                  {comment?.text}
+                </p>
+                <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
