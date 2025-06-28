@@ -4,6 +4,7 @@ import config from "./config";
 interface CommentsCredentials {
   title: string;
   project$Id: string;
+  comment$Id: string;
 }
 
 export class CommentService {
@@ -29,12 +30,12 @@ export class CommentService {
     }
   }
 
-  async deleteComment({ project$Id }: Pick<CommentsCredentials, "project$Id">) {
+  async deleteComment({ comment$Id }: CommentsCredentials) {
     try {
       return await this.databases.deleteDocument(
         config.databaseId,
         config.commentsCollectionId,
-        project$Id
+        comment$Id
       );
     } catch (error) {
       console.log("Appwrite service :: deleteComment", error);
