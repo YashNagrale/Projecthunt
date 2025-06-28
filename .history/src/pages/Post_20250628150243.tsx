@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import projectService from "@/components/appwrite/projectService";
 import { LoadingSpinner } from "@/components";
-import commentService from "@/components/appwrite/commentService";
 
 type CommentType = {
   comment: string;
@@ -40,9 +39,9 @@ function Post(): JSX.Element {
     data: commentData,
     loading: commentDataLoading,
     execute: commentDataExecute,
-  } = useAsync(async () => {
-    const comment = await commentService.listComments();
-    return comment;
+  } = useAsync(async (id: string) => {
+    const project = await commen
+    return project;
   });
 
   useEffect(() => {
@@ -146,12 +145,12 @@ function Post(): JSX.Element {
         )}
 
         <ul className="space-y-1">
-          {commentData?.map((comment: string, index: number) => (
+          {pageData?.comments.map((comment: string, index: number) => (
             <li
               key={index}
               className="border-b px-1 py-2 flex justify-between items-center"
             >
-              <p className=" text-sm text-muted-foreground">{comment?.text}</p>
+              <p className=" text-sm text-muted-foreground">{comment}</p>
               <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
             </li>
           ))}

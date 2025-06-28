@@ -20,7 +20,7 @@ function Post(): JSX.Element {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<CommentType>({
+  } = useForm<Comm>({
     mode: "onChange",
     delayError: 600,
   });

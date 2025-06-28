@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import projectService from "@/components/appwrite/projectService";
 import { LoadingSpinner } from "@/components";
-import commentService from "@/components/appwrite/commentService";
 
 type CommentType = {
   comment: string;
@@ -24,7 +23,6 @@ function Post(): JSX.Element {
     mode: "onChange",
     delayError: 600,
   });
-
   const { project$Id } = useParams();
 
   const {
@@ -34,15 +32,6 @@ function Post(): JSX.Element {
   } = useAsync(async (id: string) => {
     const project = await projectService.getProject({ project$Id: id });
     return project;
-  });
-
-  const {
-    data: commentData,
-    loading: commentDataLoading,
-    execute: commentDataExecute,
-  } = useAsync(async () => {
-    const comment = await commentService.listComments();
-    return comment;
   });
 
   useEffect(() => {
@@ -105,13 +94,11 @@ function Post(): JSX.Element {
         </div>
         <div id="projectData" className="py-1">
           <h1 className="text-primary text-3xl font-bold">
-            {pageData?.title || "Project title"}
-          </h1>
+            {pageData?.title || Project title}</h1>
           <p className="text-md text-muted-foreground">
-            {pageData?.description ||
-              `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis
             similique maxime consequatur. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit.`}
+            adipisicing elit.
           </p>
         </div>
       </div>
@@ -146,15 +133,18 @@ function Post(): JSX.Element {
         )}
 
         <ul className="space-y-1">
-          {commentData?.map((comment: string, index: number) => (
-            <li
-              key={index}
-              className="border-b px-1 py-2 flex justify-between items-center"
-            >
-              <p className=" text-sm text-muted-foreground">{comment?.text}</p>
-              <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
-            </li>
-          ))}
+          <li className="border-b px-1 py-2 flex justify-between items-center">
+            <p className=" text-sm text-muted-foreground">
+              Lorem ipsum dolor sit amet consectetur adipisicing.
+            </p>
+            <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
+          </li>
+          <li className="border-b px-1 py-2 flex justify-between items-center">
+            <p className=" text-sm text-muted-foreground">
+              Lorem ipsum dolor, sit amet consectetur adipisicing.
+            </p>
+            <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
+          </li>
         </ul>
       </div>
     </div>

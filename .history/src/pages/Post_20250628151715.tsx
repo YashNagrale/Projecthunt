@@ -40,7 +40,7 @@ function Post(): JSX.Element {
     data: commentData,
     loading: commentDataLoading,
     execute: commentDataExecute,
-  } = useAsync(async () => {
+  } = useAsync<Cp>(async () => {
     const comment = await commentService.listComments();
     return comment;
   });

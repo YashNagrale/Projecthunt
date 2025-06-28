@@ -1,21 +1,14 @@
-import useAsync from "@/hooks/useAsync";
 import dummyImg from "../assets/dummy-img.jpg";
 import { Badge, Button, Input } from "@/components/ui";
 import { ExternalLinkIcon, Trash2 } from "lucide-react";
-import { useEffect, type JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
-import projectService from "@/components/appwrite/projectService";
-import { LoadingSpinner } from "@/components";
-import commentService from "@/components/appwrite/commentService";
+import { useParams } from "react-router-dom";
 
 type CommentType = {
   comment: string;
 };
-
 function Post(): JSX.Element {
-  const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -24,42 +17,18 @@ function Post(): JSX.Element {
     mode: "onChange",
     delayError: 600,
   });
-
+  const [postData, setPostData] = useState(null);
   const { project$Id } = useParams();
 
-  const {
-    data: pageData,
-    loading: pageDataLoading,
-    execute: pageDataExecute,
-  } = useAsync(async (id: string) => {
-    const project = await projectService.getProject({ project$Id: id });
-    return project;
-  });
-
-  const {
-    data: commentData,
-    loading: commentDataLoading,
-    execute: commentDataExecute,
-  } = useAsync(async () => {
-    const comment = await commentService.listComments();
-    return comment;
-  });
-
-  useEffect(() => {
-    if (project$Id) {
-      pageDataExecute(project$Id);
-    }
-  }, [project$Id, navigate, pageDataExecute]);
-
+  useEffect(() => {}, [postData]);
   const handleComment = () => {};
-  return pageDataLoading ? (
-    <LoadingSpinner fullPage />
-  ) : (
+
+  return (
     <div className="px-2 py-2 space-y-2 h-full flex flex-col justify-between">
       <div>
         <div id="img" className="relative">
           <Badge className="absolute left-2 top-2 text-center font-semibold cursor-default select-none">
-            Clicks: {pageData?.clicks || 0}
+            Clicks: 0
           </Badge>
           <img
             src={dummyImg}
@@ -91,27 +60,24 @@ function Post(): JSX.Element {
               variant={"outline"}
               className="backdrop-blur-2xl font-semibold"
             >
-              Like: {pageData?.likes.length || 0}
+              Like: 0
             </Button>
             <a href="#comment">
               <Button
                 variant={"outline"}
                 className="backdrop-blur-2xl font-semibold"
               >
-                Comment: {pageData?.comments.length || 0}
+                Comment: 0
               </Button>
             </a>
           </div>
         </div>
         <div id="projectData" className="py-1">
-          <h1 className="text-primary text-3xl font-bold">
-            {pageData?.title || "Project title"}
-          </h1>
+          <h1 className="text-primary text-3xl font-bold">Project title</h1>
           <p className="text-md text-muted-foreground">
-            {pageData?.description ||
-              `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis
             similique maxime consequatur. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit.`}
+            adipisicing elit.
           </p>
         </div>
       </div>
@@ -146,15 +112,18 @@ function Post(): JSX.Element {
         )}
 
         <ul className="space-y-1">
-          {commentData?.map((comment: string, index: number) => (
-            <li
-              key={index}
-              className="border-b px-1 py-2 flex justify-between items-center"
-            >
-              <p className=" text-sm text-muted-foreground">{comment?.text}</p>
-              <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
-            </li>
-          ))}
+          <li className="border-b px-1 py-2 flex justify-between items-center">
+            <p className=" text-sm text-muted-foreground">
+              Lorem ipsum dolor sit amet consectetur adipisicing.
+            </p>
+            <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
+          </li>
+          <li className="border-b px-1 py-2 flex justify-between items-center">
+            <p className=" text-sm text-muted-foreground">
+              Lorem ipsum dolor, sit amet consectetur adipisicing.
+            </p>
+            <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
+          </li>
         </ul>
       </div>
     </div>

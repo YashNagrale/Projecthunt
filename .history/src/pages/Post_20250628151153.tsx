@@ -146,12 +146,12 @@ function Post(): JSX.Element {
         )}
 
         <ul className="space-y-1">
-          {commentData?.map((comment: string, index: number) => (
+          {commentData?.documents.map((comment: string, index: number) => return (
             <li
               key={index}
               className="border-b px-1 py-2 flex justify-between items-center"
             >
-              <p className=" text-sm text-muted-foreground">{comment?.text}</p>
+              <p className=" text-sm text-muted-foreground">{comment}</p>
               <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
             </li>
           ))}

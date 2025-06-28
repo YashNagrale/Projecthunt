@@ -40,7 +40,7 @@ function Post(): JSX.Element {
     data: commentData,
     loading: commentDataLoading,
     execute: commentDataExecute,
-  } = useAsync(async () => {
+  } = useAsync<CommentType>(async () => {
     const comment = await commentService.listComments();
     return comment;
   });
@@ -151,7 +151,7 @@ function Post(): JSX.Element {
               key={index}
               className="border-b px-1 py-2 flex justify-between items-center"
             >
-              <p className=" text-sm text-muted-foreground">{comment?.text}</p>
+              <p className=" text-sm text-muted-foreground">{comment.text}</p>
               <Trash2 className="text-red-600 hover:text-red-700 w-5 font-bold" />
             </li>
           ))}
