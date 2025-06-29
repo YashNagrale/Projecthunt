@@ -4,7 +4,7 @@ import type { JSX } from "react";
 
 export default function SkeletonProjectCard(): JSX.Element {
   return (
-    <Card className="w-full max-w-md border-2 rounded-2xl mx-auto mt-16 p-0 pb-1 gap-2">
+    <Card className="w-full max-w-md border-2 rounded-2xl p-0 pb-1 gap-2">
       <CardHeader className="p-0 relative rounded-2xl h-44">
         <Skeleton className="w-full h-44 rounded-2xl" />
       </CardHeader>

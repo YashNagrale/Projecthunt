@@ -122,7 +122,7 @@ export function PostCard({
           toast.info("Login to view the post");
         }
       }}
-      className="w-full max-w-md border-2 rounded-2xl mx-auto mt-16 p-0 pb-1 gap-2"
+      className="w-full max-w-md border-2 rounded-2xl p-0 pb-1 gap-2"
     >
       <CardHeader className="block relative rounded-2xl border-b-2 p-0">
         <Badge
