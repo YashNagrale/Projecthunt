@@ -1,8 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+interface UserData {
+  $id: string;
+  name: string;
+  email?: string;
+}
 interface AuthValues {
   status: boolean;
-  userData: object | null;
+  userData: UserData | null;
 }
 
 const initialState: AuthValues = {
