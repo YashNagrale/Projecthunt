@@ -23,7 +23,7 @@ function EditPost() {
     }
   }, [navigate, project$Id, userData]);
 
-  return (
+  return post ? (
     <PostForm
       post={{
         title: post?.title,
@@ -33,7 +33,7 @@ function EditPost() {
         project$Id: post?.$id as string,
       }}
     />
-  );
+  ) : null;
 }
 
 export default EditPost;
