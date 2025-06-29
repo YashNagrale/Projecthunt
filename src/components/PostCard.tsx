@@ -202,7 +202,7 @@ export function PostCard({
                 handleClick($id, userData.$id);
                 navigate(`/post/${$id}`);
               } else {
-                toast.info("Login to view the post");
+                toast.info("Login to comment on the post");
               }
             }}
             className="rounded-full font-semibold"
