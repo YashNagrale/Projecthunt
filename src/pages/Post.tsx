@@ -1,19 +1,30 @@
 import useAsync from "@/hooks/useAsync";
 import dummyImg from "../assets/dummy-img.jpg";
 import { Badge, Button, Input } from "@/components/ui";
-import { ExternalLinkIcon, Trash2 } from "lucide-react";
-import { useEffect, type JSX } from "react";
+import { ExternalLinkIcon, Link, Trash2 } from "lucide-react";
+import { useEffect, useState, type JSX } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import projectService from "@/components/appwrite/projectService";
 import { LoadingSpinner } from "@/components";
 import commentService from "@/components/appwrite/commentService";
+import { toast } from "sonner";
+import { useTheme } from "@/components/theme-provider";
+import { useAppSelector } from "@/hooks/useStore";
 
 type CommentType = {
   title: string;
 };
 
 function Post(): JSX.Element {
+  const { project$Id } = useParams();
+  const { theme } = useTheme();
+  const [projectImg, setProjectImg] = useState(dummyImg);
+  const [isImageLoading, setIsImageLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [like, setLike] = useState(0);
+  const [hasLiked, setHasLiked] = useState<boolean>(false);
+  const { userData } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
   const {
@@ -25,7 +36,17 @@ function Post(): JSX.Element {
     delayError: 600,
   });
 
-  const { project$Id } = useParams();
+  const { loading: deletePostLoading, execute: deletePostExecute } = useAsync(
+    async (projectId: string) => {
+      return await projectService.deleteProject({ project$Id: projectId });
+    }
+  );
+  const deletePost = async (projectId: string) => {
+    if (projectId) {
+      await deletePostExecute(projectId);
+      navigate(`/@${userData?.name}`);
+    }
+  };
 
   const {
     data: pageData,
@@ -80,7 +101,53 @@ function Post(): JSX.Element {
     }
   };
 
-  // TODO: Delete post, toogle like, image, navigation remaining
+  useEffect(() => {
+    if (!pageData?.link) return;
+
+    const url = `https://api.screenshotone.com/take?url=${pageData?.link}`;
+    setIsImageLoading(true);
+    setHasError(false);
+
+    const img = new Image();
+    img.onload = () => {
+      setProjectImg(url);
+      setIsImageLoading(false);
+    };
+    img.onerror = () => {
+      setProjectImg(dummyImg);
+      setHasError(true);
+      setIsImageLoading(false);
+      toast.error("Error on getting image");
+    };
+
+    img.src = url;
+  }, [pageData?.link]);
+
+  useEffect(() => {
+    if (pageData) {
+      setLike(pageData.likes.length);
+    }
+  }, [like, pageData]);
+
+  const handleLike = async (projectId: string, userId: string) => {
+    try {
+      if (projectId) {
+        setHasLiked(true);
+        setLike((prev) => prev + 1);
+        return await projectService.toogleLike({
+          project$Id: projectId,
+          userId,
+        });
+      }
+    } catch (error) {
+      setHasLiked(false);
+      setLike((prev) => prev - 1);
+      console.log("Like error :: handleLike", error);
+    }
+  };
+
+  const isAuthor =
+    pageData && userData ? pageData.userId === userData?.$id : false;
 
   return pageDataLoading ? (
     <LoadingSpinner fullPage />
@@ -88,45 +155,77 @@ function Post(): JSX.Element {
     <div className="px-2 py-2 space-y-2 h-full flex flex-col justify-between">
       <div>
         <div id="img" className="relative">
-          <Badge className="absolute left-2 top-2 text-center font-semibold cursor-default select-none">
+          <Badge className="absolute left-2 top-2 text-center font-semibold cursor-default select-none z-10">
             Clicks: {pageData?.clicks || 0}
           </Badge>
+
+          {isImageLoading && (
+            <LoadingSpinner classes="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10" />
+          )}
           <img
-            src={dummyImg}
-            className={`rounded-2xl border w-full object-cover h-60`}
-            alt="projectImg"
+            className={`rounded-2xl border w-full object-cover h-64 ${
+              hasError || projectImg === dummyImg
+                ? theme === "dark"
+                  ? "invert-0"
+                  : "invert-100"
+                : ""
+            } ${isImageLoading ? "opacity-60" : ""}`}
+            src={projectImg}
           />
-          <div
-            id="btnActions"
-            className={`absolute p-1 top-1 right-1 flex gap-1`}
-          >
-            <Button
-              variant={"outline"}
-              className="cursor-pointer font-semibold backdrop-blur-2xl"
+
+          {isAuthor && (
+            <div
+              id="btnActions"
+              className={`absolute p-1 top-1 right-1 flex gap-1`}
             >
-              Edit
-            </Button>
-            <Button className="bg-red-800 hover:bg-red-900 cursor-pointer font-semibold backdrop-blur-2xl">
-              Delete
-            </Button>
-          </div>
+              <Link to={`/edit-post/${pageData?.$id}`}>
+                <Button
+                  variant={"secondary"}
+                  className="cursor-pointer font-semibold border"
+                >
+                  Edit
+                </Button>
+              </Link>
+              <Button
+                disabled={deletePostLoading}
+                onClick={() => {
+                  if (project$Id) deletePost(project$Id);
+                }}
+                className="bg-red-800 hover:bg-red-900 cursor-pointer font-semibold"
+              >
+                {deletePostLoading ? (
+                  <>
+                    Delete <LoadingSpinner />
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </Button>
+            </div>
+          )}
+
           <div className="flex gap-1 absolute right-2 bottom-2">
+            <a href={pageData?.link} target="_blank" rel="noopener noreferrer">
+              <Button variant={"secondary"} className=" font-semibold border">
+                Visit <ExternalLinkIcon />{" "}
+              </Button>
+            </a>
             <Button
-              variant={"outline"}
-              className="backdrop-blur-2xl font-semibold"
+              id="likeBtn"
+              onClick={() => {
+                if (project$Id && userData?.$id) {
+                  handleLike(project$Id, userData?.$id);
+                }
+              }}
+              variant={"secondary"}
+              className="font-semibold border"
             >
-              Visit <ExternalLinkIcon />{" "}
-            </Button>
-            <Button
-              variant={"outline"}
-              className="backdrop-blur-2xl font-semibold"
-            >
-              Like: {pageData?.likes.length || 0}
+              {hasLiked ? "Liked" : "Like"}: {like}
             </Button>
             <a href="#comment">
               <Button
-                variant={"outline"}
-                className="backdrop-blur-2xl font-semibold"
+                variant={"secondary"}
+                className="backdrop-blur-2xl font-semibold border"
               >
                 Comment: {pageData?.comments.length || 0}
               </Button>
@@ -152,7 +251,7 @@ function Post(): JSX.Element {
             id="comment"
             type="title"
             placeholder="Leave a comment..."
-            className="flex"
+            className="flex text-sm"
             {...register("title", {
               minLength: {
                 value: 1,
@@ -194,14 +293,16 @@ function Post(): JSX.Element {
                     <p className=" text-sm text-muted-foreground">
                       {comment?.text}
                     </p>
-                    {deleteCommentLoading ? (
-                      <LoadingSpinner size={20} />
-                    ) : (
-                      <Trash2
-                        onClick={() => deleteComment(comment.$id)}
-                        className="text-red-600 hover:text-red-700 w-5 font-bold"
-                      />
-                    )}
+
+                    {isAuthor &&
+                      (deleteCommentLoading ? (
+                        <LoadingSpinner size={20} />
+                      ) : (
+                        <Trash2
+                          onClick={() => deleteComment(comment.$id)}
+                          className="text-red-600 hover:text-red-700 w-5 font-bold"
+                        />
+                      ))}
                   </>
                 )}
               </li>
