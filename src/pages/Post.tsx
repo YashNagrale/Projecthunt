@@ -124,24 +124,26 @@ function Post(): JSX.Element {
   }, [pageData?.link]);
 
   useEffect(() => {
-    if (pageData) {
+    if (pageData && userData) {
       setLike(pageData.likes.length);
+      setHasLiked(pageData.likedBy.includes(userData.$id));
     }
-  }, [like, pageData]);
+  }, [pageData, userData]);
 
   const handleLike = async (projectId: string, userId: string) => {
     try {
-      if (projectId) {
-        setHasLiked(true);
-        setLike((prev) => prev + 1);
-        return await projectService.toogleLike({
-          project$Id: projectId,
-          userId,
-        });
-      }
+      if (!projectId) return;
+
+      setHasLiked((prev) => !prev);
+      setLike((prev) => (hasLiked ? prev - 1 : prev + 1));
+
+      await projectService.toogleLike({
+        project$Id: projectId,
+        userId,
+      });
     } catch (error) {
-      setHasLiked(false);
-      setLike((prev) => prev - 1);
+      setHasLiked((prev) => !prev);
+      setLike((prev) => (hasLiked ? prev + 1 : Math.max(prev - 1, 0)));
       console.log("Like error :: handleLike", error);
     }
   };
