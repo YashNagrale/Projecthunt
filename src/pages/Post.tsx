@@ -1,10 +1,10 @@
 import useAsync from "@/hooks/useAsync";
 import dummyImg from "../assets/dummy-img.jpg";
 import { Badge, Button, Input } from "@/components/ui";
-import { ExternalLinkIcon, Link, Trash2 } from "lucide-react";
+import { ExternalLinkIcon, Heart, Trash2 } from "lucide-react";
 import { useEffect, useState, type JSX } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import projectService from "@/components/appwrite/projectService";
 import { LoadingSpinner } from "@/components";
 import commentService from "@/components/appwrite/commentService";
@@ -222,7 +222,12 @@ function Post(): JSX.Element {
               variant={"secondary"}
               className="font-semibold border"
             >
-              {hasLiked ? "Liked" : "Like"}: {like}
+              <span>Like</span>
+              <Heart
+                fill={`${hasLiked ? "red" : "var(--secondary)"}`}
+                color={`${hasLiked ? "red" : "white"}`}
+              />
+              <span>:</span> {like}
             </Button>
             <a href="#comment">
               <Button

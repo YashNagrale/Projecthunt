@@ -8,12 +8,15 @@ import {
 } from "@/components/ui/card";
 import dummyImg from "../assets/dummy-img.jpg";
 import { Badge, Button } from "./ui";
-import { ExternalLinkIcon } from "lucide-react";
+import { ExternalLinkIcon, Heart } from "lucide-react";
 import { useTheme } from "./theme-provider";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components";
 import { toast } from "sonner";
+import { useAppSelector } from "@/hooks/useStore";
+import projectService from "./appwrite/projectService";
+import useAsync from "@/hooks/useAsync";
 
 interface PostCardData {
   $id: string;
@@ -37,12 +40,16 @@ export function PostCard({
   projectLink = "",
 }: PostCardData) {
   const { theme } = useTheme();
+  const { status, userData } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const [projectImg, setProjectImg] = useState(dummyImg);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [like, setLike] = useState(0);
+  const [hasLiked, setHasLiked] = useState<boolean>(false);
 
   useEffect(() => {
+    setLike(likes);
     if (!projectLink) return;
 
     const url = `https://api.screenshotone.com/take?url=${projectLink}`;
@@ -62,14 +69,57 @@ export function PostCard({
     };
 
     img.src = url;
-  }, [projectLink]);
+  }, [projectLink, likes]);
+
+  const handleLike = async () => {
+    if (!status) {
+      toast.info("Login to like the project");
+      return;
+    }
+
+    const nextLiked = !hasLiked;
+    setHasLiked(nextLiked);
+    setLike((prev) => (nextLiked ? prev + 1 : Math.max(prev - 1, 0)));
+
+    try {
+      if (userData) {
+        await projectService.toogleLike({
+          project$Id: $id,
+          userId: userData.$id,
+        });
+      }
+    } catch (error) {
+      console.log("Post card :: Error", error);
+      setHasLiked((prev) => !prev);
+      setLike((prev) => (nextLiked ? Math.max(prev - 1, 0) : prev + 1));
+    }
+  };
+
+  const { execute: handleClickExecute } = useAsync(
+    async ([projectId, userId]: [string, string]) => {
+      return await projectService.projectClicks({
+        project$Id: projectId,
+        userId,
+      });
+    }
+  );
+  const handleClick = async (projectId: string, userId: string) => {
+    if (!status || !userData) return;
+    if (projectId && userId) {
+      await handleClickExecute([projectId, userId]);
+    }
+  };
 
   return (
     <Card
       onClick={() => {
         const selectedText = window.getSelection?.()?.toString();
-        if (!selectedText) {
+        if (selectedText) return;
+        if (status && userData) {
+          handleClick($id, userData?.$id);
           navigate(`/post/${$id}`);
+        } else {
+          toast.info("Login to view the post");
         }
       }}
       className="w-full max-w-md border-2 rounded-2xl mx-auto mt-16 p-0 pb-1 gap-2"
@@ -131,16 +181,30 @@ export function PostCard({
         </Button>
         <div className="space-x-1">
           <Button
-            onClick={(e) => e.stopPropagation()}
+            onClick={handleLike}
             className="rounded-full font-semibold"
             variant={"outline"}
           >
-            <p className="text-muted-foreground">
-              Likes: <span className="text-secondary-foreground">{likes}</span>
+            <p className="text-muted-foreground flex items-center justify-center gap-1">
+              <span>Like</span>
+              <Heart
+                fill={`${hasLiked ? "red" : "var(--secondary)"}`}
+                color={`${hasLiked ? "red" : "white"}`}
+              />
+              <span>:</span>
+              <span className="text-secondary-foreground">{like}</span>
             </p>
           </Button>
           <Button
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (status && userData) {
+                handleClick($id, userData.$id);
+                navigate(`/post/${$id}`);
+              } else {
+                toast.info("Login to view the post");
+              }
+            }}
             className="rounded-full font-semibold"
             variant={"outline"}
           >
