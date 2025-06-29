@@ -9,17 +9,15 @@ import { LoadingSpinner } from "@/components";
 import { useAppSelector } from "@/hooks/useStore";
 import { useTheme } from "../theme-provider";
 
-type FormInput = {
+type FormValues = {
   title: string;
   link: string;
   description: string;
   project$Id: string;
-  userId?: string;
-  $id: string;
 };
 
 type PostFormProps = {
-  post: FormInput;
+  post: FormValues;
 };
 
 function PostForm({ post }: PostFormProps): React.JSX.Element {
@@ -28,14 +26,13 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
   const [isCancelDisabled, setIsCancelDisabled] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const methods = useForm<FormInput>({
+  const methods = useForm<FormValues>({
     mode: "onChange",
     delayError: 800,
     defaultValues: {
       title: post?.title || "",
       link: post?.link || "",
       description: post?.description || "",
-      project$Id: post?.$id,
     },
   });
 
@@ -59,21 +56,24 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
 
   const validLink = getPreviewLink(rawLink);
 
-  const { loading, execute } = useAsync(async (postData: FormInput) => {
+  const { loading, execute } = useAsync(async (postData: FormValues) => {
     let dbPost;
     if (post) {
-      dbPost = await projectService.updateProject(postData);
+      dbPost = await projectService.updateProject(
+        { ...postData },
+        post.project$Id
+      );
     } else {
       dbPost = await projectService.createProject({
         ...postData,
-        userId: (userData as { $id: string })?.$id,
+        userId: userData?.$id as string,
       });
     }
     if (dbPost) {
       navigate(`/post/${dbPost.$id}`);
     }
   });
-  const createPost = async (postData: FormInput) => {
+  const createPost = async (postData: FormValues) => {
     setIsCancelDisabled(true);
     try {
       await execute(postData);
@@ -85,7 +85,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
   };
 
   return (
-    // TODO: post form needs update if post exists load the data
+    // TODO: Update input values if post already exists
     <FormProvider {...methods}>
       <div className="md:flex-row flex flex-col flex-1 w-full gap-2 p-2 h-full">
         <div

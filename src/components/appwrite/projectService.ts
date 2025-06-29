@@ -49,12 +49,14 @@ export class ProjectService {
     }
   }
 
-  async updateProject({
-    title,
-    description,
-    link,
-    project$Id,
-  }: Omit<ProjectCredentials, "userId">) {
+  async updateProject(
+    {
+      title,
+      description,
+      link,
+    }: Omit<ProjectCredentials, "userId" | "project$Id">,
+    project$Id: string
+  ) {
     try {
       return await this.databases.updateDocument(
         config.databaseId,
