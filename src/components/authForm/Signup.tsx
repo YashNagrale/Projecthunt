@@ -35,7 +35,7 @@ export default function Signup() {
     formState: { errors, isValid, isDirty },
   } = useForm<InputData>({
     mode: "onChange",
-    delayError: 600,
+    delayError: 700,
   });
 
   const { loading, execute } = useAsync(async (formData: InputData) => {

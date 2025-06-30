@@ -28,7 +28,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
 
   const methods = useForm<FormValues>({
     mode: "onChange",
-    delayError: 800,
+    delayError: 700,
     defaultValues: {
       title: post?.title || "",
       link: post?.link || "",

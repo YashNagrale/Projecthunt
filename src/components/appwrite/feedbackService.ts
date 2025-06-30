@@ -22,9 +22,9 @@ export class FeedbackService {
     title,
     userId,
     userEmail,
-  }: FeedbackServiceCredentials) {
+  }: Omit<FeedbackServiceCredentials, "feedbackId">) {
     try {
-      return this.databases.createDocument(
+      return await this.databases.createDocument(
         config.databaseId,
         config.feedbackCollectionId,
         ID.unique(),
@@ -40,13 +40,25 @@ export class FeedbackService {
     feedbackId,
   }: Pick<FeedbackServiceCredentials, "feedbackId">) {
     try {
-      return this.databases.deleteDocument(
+      return await this.databases.deleteDocument(
         config.databaseId,
         config.feedbackCollectionId,
         feedbackId
       );
     } catch (error) {
       console.log("Appwrite service :: deleteFeedback", error);
+      throw error;
+    }
+  }
+
+  async listFeedbacks() {
+    try {
+      return await this.databases.listDocuments(
+        config.databaseId,
+        config.feedbackCollectionId
+      );
+    } catch (error) {
+      console.log("Appwrite service :: listFeedbacks", error);
       throw error;
     }
   }

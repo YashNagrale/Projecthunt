@@ -253,7 +253,7 @@ function Post(): JSX.Element {
       </div>
 
       <div className="border-2 rounded-xl px-2 py-2 space-y-3">
-        <form onClick={handleSubmit(addComment)} className="flex gap-2 m-0">
+        <form onSubmit={handleSubmit(addComment)} className="flex gap-2 m-0">
           <Input
             id="comment"
             type="title"
@@ -271,7 +271,7 @@ function Post(): JSX.Element {
             })}
           />
           <Button
-            // TODO: Fix needed on disabled action
+            // TODO: Fix needed on disabled action maybe required: true needed
             disabled={!isValid || addCommentLoading}
             type="submit"
             variant="outline"
