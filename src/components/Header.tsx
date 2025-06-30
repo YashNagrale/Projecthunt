@@ -1,5 +1,5 @@
 import React from "react";
-import { ModeToggle } from "@/components";
+import { FeedbackFormAlert, ModeToggle } from "@/components";
 import "../index.css";
 
 function Header(): React.JSX.Element {
@@ -11,7 +11,10 @@ function Header(): React.JSX.Element {
       <div className="font-['Great_Vibes'] space-x-1 text-2xl lg:text-3xl md:text-2xl select-none cursor-pointer font-semibold">
         Projecthunt
       </div>
-      <ModeToggle />
+      <div className="flex items-center justify-center gap-2">
+        <FeedbackFormAlert />
+        <ModeToggle />
+      </div>
     </header>
   );
 }
