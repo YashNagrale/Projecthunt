@@ -2,6 +2,7 @@ import { PostCard, SkeletonProjectCard } from "@/components";
 import projectService from "@/components/appwrite/projectService";
 import type { Models } from "appwrite";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 function Explore() {
   const [projects, setProjects] = useState<Models.Document[] | null>(null);
@@ -13,9 +14,9 @@ function Explore() {
         setLoading(true);
         const response = await projectService.listProjects();
         setProjects(response.documents);
-        console.log(response);
       } catch (error) {
-        console.error("Error fetching projects:", error);
+        console.error("Error :: fetchProjects", error);
+        toast.error("Error on fetching projects");
       } finally {
         setLoading(false);
       }

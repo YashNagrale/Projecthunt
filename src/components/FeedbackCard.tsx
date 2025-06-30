@@ -12,29 +12,34 @@ import feedbackService from "./appwrite/feedbackService";
 import LoadingSpinner from "./LoadingSpinner";
 
 type FeedbackCardProps = {
+  userId: string;
   title: string;
   userEmail: string;
   userMaskedEmail: string;
   feedbackId: string;
+  onDelete: () => void;
 };
 
 function FeedbackCard({
+  userId,
   title = "Card Title",
   userEmail = "user@email.com",
   userMaskedEmail = "usermaskedemail.com",
   feedbackId,
+  onDelete,
 }: FeedbackCardProps) {
   const { status, userData } = useAppSelector((state) => state.auth);
   const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
-  const isAuthor = status && userData ? userData?.email === userEmail : false;
+  const isAuthor = status && userData ? userData?.$id === userId : false;
 
   const handleDelete = async () => {
     try {
       setIsDeleteLoading(true);
-      return await feedbackService.deleteFeedback({ feedbackId });
+      await feedbackService.deleteFeedback({ feedbackId });
+      onDelete?.();
     } catch (error) {
-      console.log("Error occured :: handleDelete");
-      toast.error(error as string);
+      console.log("Error occured :: handleDelete", error);
+      toast.error("Delete failed");
     } finally {
       setIsDeleteLoading(false);
     }
