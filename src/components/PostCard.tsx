@@ -122,7 +122,7 @@ export function PostCard({
           toast.info("Login to view the post");
         }
       }}
-      className="w-full sm:max-w-md border-2 rounded-2xl p-0 pb-1 gap-2"
+      className="w-full h-min sm:max-w-md border-2 rounded-2xl p-0 pb-1 gap-2"
     >
       <CardHeader className="block relative rounded-2xl border-b-2 p-0">
         <Badge
@@ -175,7 +175,7 @@ export function PostCard({
           variant={"outline"}
         >
           <p className="text-muted-foreground">
-            Posted by:{" "}
+            Post by:{" "}
             <span className="text-secondary-foreground">{postedBy}</span>
           </p>
         </Button>
