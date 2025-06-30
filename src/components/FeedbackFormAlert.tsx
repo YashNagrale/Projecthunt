@@ -20,6 +20,7 @@ type FormPropType = {
   title: string;
   userId: string;
   userEmail: string;
+  userMaskedEmail: string;
 };
 
 export function FeedbackFormAlert() {
@@ -39,10 +40,13 @@ export function FeedbackFormAlert() {
 
   const submitFeedback = async (formData: FormPropType) => {
     if (userData?.$id && userData?.email) {
+      const maskedEmail =
+        userData.email.slice(0, 2) + "***@" + userData.email.split("@")[1];
       await execute({
         ...formData,
         userId: userData?.$id,
         userEmail: userData?.email,
+        userMaskedEmail: maskedEmail,
       });
     }
   };

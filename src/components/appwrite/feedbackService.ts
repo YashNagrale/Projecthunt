@@ -4,8 +4,9 @@ import config from "./config";
 type FeedbackServiceCredentials = {
   title: string;
   userId: string;
-  userEmail: string;
   feedbackId: string;
+  userEmail: string;
+  userMaskedEmail: string;
 };
 
 export class FeedbackService {
@@ -22,13 +23,14 @@ export class FeedbackService {
     title,
     userId,
     userEmail,
+    userMaskedEmail,
   }: Omit<FeedbackServiceCredentials, "feedbackId">) {
     try {
       return await this.databases.createDocument(
         config.databaseId,
         config.feedbackCollectionId,
         ID.unique(),
-        { title, userId, userEmail }
+        { title, userId, userEmail, userMaskedEmail }
       );
     } catch (error) {
       console.log("Appwrite service :: createFeedback", error);
