@@ -46,7 +46,7 @@ function FeedbackCard({
   };
 
   return (
-    <Card className="block max-w-80 py-4">
+    <Card className="block w-full py-4 break-inside-avoid mb-3">
       <CardHeader className="px-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="select-none w-8 h-8 rounded-full bg-foreground text-secondary flex items-center justify-center text-lg font-bold">
@@ -68,7 +68,7 @@ function FeedbackCard({
           ))}
       </CardHeader>
 
-      <CardContent className="px-4 pt-3 text-md font-semibold text-muted-foreground">
+      <CardContent className="px-4 pt-3 text-sm font-semibold text-muted-foreground">
         <p>{title}</p>
       </CardContent>
     </Card>

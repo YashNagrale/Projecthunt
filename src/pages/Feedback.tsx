@@ -29,11 +29,11 @@ function Feedback(): JSX.Element {
     fetchFeedback();
   }, []);
   return (
-    <div>
+    <div className="min-h-[200px]">
       {loading ? (
         <LoadingSpinner fullPage />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="columns-1 sm:columns-2 md:columns-3 gap-3 p-3">
           {feedbackData?.map((item) => (
             <FeedbackCard
               key={item.$id}
