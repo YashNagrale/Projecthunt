@@ -5,7 +5,7 @@ type ChildrenProp = {
   className?: string;
 };
 function Container({ children, className }: ChildrenProp) {
-  return <div className={`w-full p-2 ${className}`}>{children}</div>;
+  return <div className={`w-full ${className}`}>{children}</div>;
 }
 
 export default Container;

@@ -13,13 +13,13 @@ function ProtectedRoute({
 }: ProtectedRouteProps) {
   const navigate = useNavigate();
   const { status, userData } = useAppSelector((state) => state.auth);
-
   useEffect(() => {
     if (authentication && status !== authentication) {
       navigate("/login");
-    }
-    if (!authentication && status !== authentication) {
-      navigate(`/@${(userData as { name: string })?.name}`);
+    } else if (!authentication && status !== authentication) {
+      navigate(`/@${userData?.name}`);
+    } else {
+      console.log("Error on protected route");
     }
   }, [status, authentication, navigate, userData]);
 

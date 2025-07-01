@@ -6,7 +6,7 @@ function Login() {
     document.title = "ProjectHunt | Login";
   }, []);
   return (
-    <Container className="h-full flex items-center justify-center">
+    <Container className="h-full flex items-center justify-center p-2">
       <LoginForm />
     </Container>
   );

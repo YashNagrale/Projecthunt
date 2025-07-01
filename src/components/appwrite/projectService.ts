@@ -179,7 +179,7 @@ export class ProjectService {
       return this.databases.listDocuments(
         config.databaseId,
         config.projectCollectionId,
-        [Query.equal("userId", userId)]
+        [Query.equal("$id", userId)]
       );
     } catch (error) {
       console.log("Appwrite service :: listUserProjects", error);
