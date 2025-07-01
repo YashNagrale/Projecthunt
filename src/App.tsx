@@ -1,7 +1,6 @@
 import { Header, ThemeProvider } from "@/components";
 import { Toaster } from "./components/ui/sonner";
 import { Outlet } from "react-router-dom";
-import { Explore } from "./pages";
 
 function App() {
   return (
@@ -11,10 +10,9 @@ function App() {
         swipeDirections={["top", "right", "left"]}
       />
       <Header />
-      <Explore />
-      {/* <main className="w-full h-full"> */}
-      <Outlet />
-      {/* </main> */}
+      <main className="w-full h-full">
+        <Outlet />
+      </main>
     </ThemeProvider>
   );
 }
