@@ -11,4 +11,5 @@ export { PostCard } from "./PostCard";
 export { default as SkeletonProjectCard } from "./SkeletonProjectCard";
 export { FeedbackFormAlert } from "./FeedbackFormAlert";
 export { default as FeedbackCard } from "./FeedbackCard";
-export { default as LoggedinUser } from "./LoggedInUser";
+export { default as LoggedinUser } from "./LoggedinUser";
+export { default as ProtectedRoute } from "./ProtectedRoute";
