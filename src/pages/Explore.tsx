@@ -43,7 +43,7 @@ function Explore() {
             likes={project.likesCount || 0}
             comments={project.commentsCount || 0}
             clicks={project.clicksCount || 0}
-            postedBy={project.postedBy || "@user"}
+            postedBy={project.postedBy || "user"}
           />
         ))}
     </div>

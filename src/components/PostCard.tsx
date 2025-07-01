@@ -34,7 +34,7 @@ export function PostCard({
   clicks = 0,
   comments = 0,
   likes = 0,
-  postedBy = "@user",
+  postedBy = "user",
   projectDescription = "Project description",
   projectTitle = "Project title",
   projectLink = "",
@@ -176,7 +176,7 @@ export function PostCard({
         >
           <p className="text-muted-foreground">
             Post by:{" "}
-            <span className="text-secondary-foreground">{postedBy}</span>
+            <span className="text-secondary-foreground">@{postedBy}</span>
           </p>
         </Button>
         <div className="space-x-1">
