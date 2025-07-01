@@ -1,4 +1,4 @@
-import { Login as LoginForm } from "@/components";
+import { Container, Login as LoginForm } from "@/components";
 import { useEffect } from "react";
 
 function Login() {
@@ -6,9 +6,9 @@ function Login() {
     document.title = "ProjectHunt | Login";
   }, []);
   return (
-    <div>
+    <Container>
       <LoginForm />
-    </div>
+    </Container>
   );
 }
 

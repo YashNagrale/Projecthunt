@@ -1,4 +1,4 @@
-import { Signup as SignupForm } from "@/components";
+import { Container, Signup as SignupForm } from "@/components";
 import { useEffect } from "react";
 
 function Signup() {
@@ -6,9 +6,9 @@ function Signup() {
     document.title = "Project | Signup";
   }, []);
   return (
-    <div>
+    <Container>
       <SignupForm />
-    </div>
+    </Container>
   );
 }
 

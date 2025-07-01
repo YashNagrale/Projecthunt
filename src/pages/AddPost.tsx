@@ -1,4 +1,4 @@
-import { PostForm } from "@/components";
+import { Container, PostForm } from "@/components";
 import { useEffect } from "react";
 
 function AddPost() {
@@ -6,9 +6,9 @@ function AddPost() {
     document.title = "Project | AddPost";
   }, []);
   return (
-    <div>
+    <Container>
       <PostForm />
-    </div>
+    </Container>
   );
 }
 
