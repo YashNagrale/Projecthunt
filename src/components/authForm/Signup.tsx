@@ -57,13 +57,13 @@ export default function Signup() {
 
   return (
     <Card className="w-full max-w-sm">
-      <CardHeader>
+      <CardHeader className="px-5">
         <CardTitle>Signup to create account</CardTitle>
         <CardDescription>
           Enter your details below to create an account
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-5">
         <form onSubmit={handleSubmit(signup)}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">

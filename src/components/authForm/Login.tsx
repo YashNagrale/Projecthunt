@@ -55,13 +55,13 @@ export default function Login() {
 
   return (
     <Card className="w-full max-w-sm">
-      <CardHeader>
+      <CardHeader className="px-5">
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
           Enter your email below to login to your account
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-5">
         <form onSubmit={handleSubmit(login)}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">

@@ -4,7 +4,11 @@ import "./index.css";
 import App from "./App.tsx";
 import { Provider } from "react-redux";
 import store from "./app/store.ts";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import {
   AddPost,
   Dashboard,
@@ -23,6 +27,11 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
+        index: true,
+        element: <Navigate to={"/explore"} replace />,
+      },
+      {
+        index: true,
         path: "/login",
         element: (
           <ProtectedRoute authentication={false}>

@@ -6,7 +6,7 @@ function Signup() {
     document.title = "Project | Signup";
   }, []);
   return (
-    <Container>
+    <Container className="h-full flex items-center justify-center p-0">
       <SignupForm />
     </Container>
   );
