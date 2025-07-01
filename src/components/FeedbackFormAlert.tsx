@@ -55,7 +55,7 @@ export function FeedbackFormAlert() {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button disabled={!status} variant="outline">
-          Submit Feedback
+          {status ? "Submit Feedback" : "Submit Feedback (login required)"}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="max-h-[90vh]">
