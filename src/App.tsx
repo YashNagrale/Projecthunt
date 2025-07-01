@@ -1,8 +1,34 @@
-import { Header, ThemeProvider } from "@/components";
+import { Header, LoadingSpinner, ThemeProvider } from "@/components";
 import { Toaster } from "./components/ui/sonner";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import authService from "./components/appwrite/auth";
+import { useAppDispatch } from "./hooks/useStore";
+import { login, logout } from "./features/authSlice";
+import { toast } from "sonner";
 
 function App() {
+  const [loading, setLoading] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  useEffect(() => {
+    authService
+      .getCurrentUser()
+      .then((userData) => {
+        if (userData) {
+          dispatch(login({ userData }));
+          navigate(`/@${userData.name}`);
+        } else {
+          dispatch(logout());
+          navigate("/explore");
+        }
+      })
+      .catch((error) => {
+        toast.error("Can't find user");
+        console.log("Error on getting user", error);
+      })
+      .finally(() => setLoading(false));
+  }, [dispatch, navigate]);
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <Toaster
@@ -10,9 +36,13 @@ function App() {
         swipeDirections={["top", "right", "left"]}
       />
       <Header />
-      <main className="w-full h-full">
-        <Outlet />
-      </main>
+      {loading ? (
+        <LoadingSpinner fullPage />
+      ) : (
+        <main className="w-full h-full">
+          <Outlet />
+        </main>
+      )}
     </ThemeProvider>
   );
 }
