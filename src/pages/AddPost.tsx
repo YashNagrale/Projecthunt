@@ -6,7 +6,7 @@ function AddPost() {
     document.title = "Project | AddPost";
   }, []);
   return (
-    <Container>
+    <Container className="h-full p-0">
       <PostForm />
     </Container>
   );

@@ -31,7 +31,6 @@ const router = createBrowserRouter([
         element: <Navigate to={"/explore"} replace />,
       },
       {
-        index: true,
         path: "/login",
         element: (
           <ProtectedRoute authentication={false}>
@@ -48,7 +47,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: ":/username",
+        path: "/:username",
         element: (
           <ProtectedRoute authentication>
             <Dashboard />
@@ -57,14 +56,10 @@ const router = createBrowserRouter([
       },
       {
         path: "/explore",
-        element: (
-          <ProtectedRoute authentication={false}>
-            <Explore />
-          </ProtectedRoute>
-        ),
+        element: <Explore />,
       },
       {
-        path: "/add-post",
+        path: "/add-project",
         element: (
           <ProtectedRoute authentication>
             <AddPost />
@@ -73,11 +68,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/feedback",
-        element: (
-          <ProtectedRoute authentication={false}>
-            <Feedback />
-          </ProtectedRoute>
-        ),
+        element: <Feedback />,
       },
       {
         path: "/edit-post/:project$Id",

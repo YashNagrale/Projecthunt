@@ -84,7 +84,7 @@ function Header(): React.JSX.Element {
       <div className="font-['Great_Vibes'] space-x-1 text-2xl lg:text-3xl md:text-2xl select-none cursor-pointer font-semibold">
         Projecthunt
       </div>
-      <nav className="hidden md:flex justify-between items-center gap-8">
+      <nav className="hidden md:flex justify-between items-center gap-6">
         {navigations
           .filter((element) => element.active)
           .map((navItem, index) => (
