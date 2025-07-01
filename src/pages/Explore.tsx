@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 function Explore() {
-  const [projects, setProjects] = useState<Models.Document[] | null>(null);
+  const [projects, setProjects] = useState<Models.Document[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -27,11 +27,22 @@ function Explore() {
   const skeletonCount = projects?.length || 3;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 place-items-center">
+    <div
+      className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2 place-items-center min-h-[200px] ${
+        projects.length === 0 ? "flex items-center justify-center" : ""
+      }`}
+    >
       {loading &&
         Array.from({ length: skeletonCount }).map((_, i) => (
           <SkeletonProjectCard key={i} />
         ))}
+
+      {!loading && projects?.length === 0 && (
+        <p className="col-span-full text-muted-foreground py-10 text-center text-4xl font-extrabold">
+          No projects yet.
+        </p>
+      )}
+
       {!loading &&
         projects?.map((project) => (
           <PostCard

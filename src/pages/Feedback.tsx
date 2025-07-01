@@ -8,9 +8,7 @@ import { toast } from "sonner";
 function Feedback(): JSX.Element {
   const { status } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState<boolean>(false);
-  const [feedbackData, setFeedbackData] = useState<Models.Document[] | null>(
-    null
-  );
+  const [feedbackData, setFeedbackData] = useState<Models.Document[]>([]);
 
   const fetchFeedback = async () => {
     try {
@@ -33,9 +31,19 @@ function Feedback(): JSX.Element {
   return (
     <div>
       <div className="p-2">{!status && <FeedbackFormAlert />}</div>
-      <div className="min-h-[200px]">
+      <div
+        className={`min-h-[200px] ${
+          feedbackData.length === 0
+            ? "h-full flex items-center justify-center"
+            : ""
+        }`}
+      >
         {loading ? (
           <LoadingSpinner fullPage />
+        ) : feedbackData?.length === 0 ? (
+          <p className="text-center text-muted-foreground py-10 text-4xl font-extrabold">
+            No feedback yet.
+          </p>
         ) : (
           <div className="columns-1 sm:columns-2 md:columns-3 gap-3 p-3">
             {feedbackData?.map((item) => (
