@@ -122,7 +122,7 @@ function Post(): JSX.Element {
     };
 
     img.src = url;
-  }, [pageData?.link]);
+  }, [pageData?.link, pageData]);
 
   useEffect(() => {
     if (pageData && userData) {
