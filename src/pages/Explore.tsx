@@ -9,6 +9,7 @@ function Explore() {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    document.title = "ProjectHunt | Explore";
     const fetchProjects = async () => {
       try {
         setLoading(true);

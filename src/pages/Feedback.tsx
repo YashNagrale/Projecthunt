@@ -26,6 +26,7 @@ function Feedback(): JSX.Element {
   };
 
   useEffect(() => {
+    document.title = "ProjectHunt | Feedback";
     fetchFeedback();
   }, []);
   return (

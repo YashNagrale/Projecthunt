@@ -10,6 +10,8 @@ function Dashboard() {
   const [projects, setProjects] = useState<Models.Document[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
+    document.title = "Project | Dashboard";
+
     if (status && userData) {
       setLoading(true);
       projectService

@@ -12,6 +12,8 @@ function EditPost() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "Project | EditPost";
+
     if (project$Id) {
       projectService.getProject({ project$Id }).then((post) => {
         if (post) {
