@@ -17,7 +17,7 @@ function EditPost() {
         if (post) {
           setPost({ ...post });
         } else {
-          navigate(`/@${userData?.name}`);
+          navigate(`/@${userData?.name}`, { replace: true });
         }
       });
     }

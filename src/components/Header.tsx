@@ -65,7 +65,7 @@ function Header(): React.JSX.Element {
       setLoading(true);
       const session = await authService.logout();
       if (session) {
-        navigate("/login");
+        navigate("/login", { replace: true });
         dispatch(logout());
       }
     } catch (error) {
@@ -75,7 +75,6 @@ function Header(): React.JSX.Element {
       setLoading(false);
     }
   };
-  console.log(status);
 
   return (
     <header

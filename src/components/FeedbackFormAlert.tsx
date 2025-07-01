@@ -40,12 +40,15 @@ export function FeedbackFormAlert() {
 
   const submitFeedback = async (formData: FormPropType) => {
     if (userData?.$id && userData?.email) {
-      const maskedEmail =
-        userData.email.slice(0, 2) + "***@" + userData.email.split("@")[1];
+      const [name, domain] = userData.email.split("@");
+      const masked =
+        name.slice(0, 2) + "*".repeat(name.length - 3) + name.slice(-1);
+      const maskedEmail = `${masked}@${domain}`;
+
       await execute({
         ...formData,
-        userId: userData?.$id,
-        userEmail: userData?.email,
+        userId: userData.$id,
+        userEmail: userData.email,
         userMaskedEmail: maskedEmail,
       });
     }

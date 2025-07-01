@@ -47,7 +47,7 @@ export default function Signup() {
       }
       toast.success("Account created successfully");
       dispatch(login({ userData }));
-      navigate(`/@${userData.name}`);
+      navigate(`/@${userData.name}`, { replace: true });
     }
   });
 

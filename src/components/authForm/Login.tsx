@@ -45,7 +45,7 @@ export default function Login() {
       }
       toast.success("Login success");
       dispatch(authLogin({ userData }));
-      navigate(`/@${userData.name}`);
+      navigate(`/@${userData.name}`, { replace: true });
     }
   });
 

@@ -44,7 +44,7 @@ function Post(): JSX.Element {
   const deletePost = async (projectId: string) => {
     if (projectId) {
       await deletePostExecute(projectId);
-      navigate(`/@${userData?.name}`);
+      navigate(`/@${userData?.name}`, { replace: true });
     }
   };
 

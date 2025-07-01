@@ -4,7 +4,7 @@ import { Button, Input, Textarea } from "../ui";
 import { FormProvider, useForm } from "react-hook-form";
 import useAsync from "@/hooks/useAsync";
 import projectService from "../appwrite/projectService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoadingSpinner } from "@/components";
 import { useAppSelector } from "@/hooks/useStore";
 import { useTheme } from "../theme-provider";
@@ -70,7 +70,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
       });
     }
     if (dbPost) {
-      navigate(`/post/${dbPost.$id}`);
+      navigate(`/post/${dbPost.$id}`, { replace: true });
     }
   });
   const createPost = async (postData: FormValues) => {
@@ -185,14 +185,15 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
               )}
             </div>
             <div className="flex items-center justify-end gap-2">
-              {/* TODO: Cancel to dashboard*/}
-              <Button
-                disabled={isCancelDisabled}
-                variant="outline"
-                className="cursor-pointer"
-              >
-                Cancel
-              </Button>
+              <Link to={`/@${userData?.name}`}>
+                <Button
+                  disabled={isCancelDisabled}
+                  variant="outline"
+                  className="cursor-pointer"
+                >
+                  Cancel
+                </Button>
+              </Link>
               <Button
                 disabled={!isDirty || !isValid}
                 className={`cursor-pointer ${
