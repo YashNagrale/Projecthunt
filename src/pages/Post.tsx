@@ -102,7 +102,7 @@ function Post(): JSX.Element {
   };
 
   useEffect(() => {
-    document.title = "ProjectHunt | Project";
+    document.title = `ProjectHunt | ${pageData ? pageData?.title : "Project"}`;
     if (!pageData?.link) return;
 
     const url = `https://api.screenshotone.com/take?url=${pageData?.link}`;
