@@ -17,7 +17,7 @@ type FormValues = {
 };
 
 type PostFormProps = {
-  post: FormValues;
+  post?: FormValues;
 };
 
 function PostForm({ post }: PostFormProps): React.JSX.Element {
