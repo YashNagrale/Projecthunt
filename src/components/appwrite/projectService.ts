@@ -27,6 +27,11 @@ export class ProjectService {
     link,
     userId,
   }: Omit<ProjectCredentials, "project$Id">) {
+    let formattedLink = link.trim();
+    if (!/^https?:\/\//i.test(formattedLink)) {
+      formattedLink = `https://${formattedLink}`;
+    }
+
     try {
       return await this.databases.createDocument(
         config.databaseId,
@@ -35,8 +40,8 @@ export class ProjectService {
         {
           title,
           description,
-          link,
-          userId,
+          link: formattedLink,
+          userid: userId,
           likesCount: 0,
           likedBy: [],
           clicksCount: 0,
@@ -62,7 +67,7 @@ export class ProjectService {
         config.databaseId,
         config.projectCollectionId,
         project$Id,
-        { title, description, link }
+        { title, description, url: link }
       );
     } catch (error) {
       console.log("Appwrite service :: updateProject", error);
