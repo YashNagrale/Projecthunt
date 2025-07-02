@@ -97,7 +97,7 @@ function Header(): React.JSX.Element {
                 } hover:text-primary duration-300 transition-all`
               }
             >
-              <li className="list-none font-semibold text-lg">
+              <li className="list-none font-semibold text-md">
                 {navItem.name}
               </li>
             </NavLink>

@@ -79,7 +79,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/post/$id",
+        path: "/post/:id",
         element: (
           <ProtectedRoute authentication>
             <Post />
