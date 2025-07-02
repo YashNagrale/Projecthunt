@@ -87,7 +87,6 @@ function Post(): JSX.Element {
       commentDataExecute(id);
     }
   }, [id, pageDataExecute, commentDataExecute]);
-  console.log(commentData);
 
   const { loading: addCommentLoading, execute: addCommentExecute } = useAsync(
     async (commentFormData: CommentType) => {
