@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 type LikeState = {
   [projectId: string]: {
@@ -27,8 +27,8 @@ const likeSlice = createSlice({
       const { projectId, hasLiked, count } = action.payload;
       state[projectId] = { hasLiked, count };
     },
-    setLikes: (state, action) => {
-      return action.payload;
+    setLikes: (state, action: PayloadAction<LikeState>) => {
+      Object.assign(state, action.payload);
     },
   },
 });
