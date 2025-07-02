@@ -14,9 +14,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components";
 import { toast } from "sonner";
-import { useAppSelector } from "@/hooks/useStore";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import projectService from "./appwrite/projectService";
 import useAsync from "@/hooks/useAsync";
+import { toggleLike } from "@/features/likeSlice";
 
 interface PostCardData {
   $id: string;
@@ -45,11 +46,12 @@ export function PostCard({
   const [projectImg, setProjectImg] = useState(dummyImg);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [like, setLike] = useState(0);
-  const [hasLiked, setHasLiked] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const likeState = useAppSelector((state) => state.like[$id] || {});
+  const hasLiked = likeState.hasLiked || false;
+  const like = likeState.count || 0;
 
   useEffect(() => {
-    setLike(likes);
     if (!projectLink) return;
 
     const url = `https://api.screenshotone.com/take?url=${projectLink}`;
@@ -72,26 +74,21 @@ export function PostCard({
   }, [projectLink, likes]);
 
   const handleLike = async () => {
-    if (!status) {
+    if (!status || !userData) {
       toast.info("Login to like the project");
       return;
     }
 
-    const nextLiked = !hasLiked;
-    setHasLiked(nextLiked);
-    setLike((prev) => (nextLiked ? prev + 1 : Math.max(prev - 1, 0)));
+    dispatch(toggleLike({ projectId: $id }));
 
     try {
-      if (userData) {
-        await projectService.toogleLike({
-          project$Id: $id,
-          userId: userData.$id,
-        });
-      }
+      await projectService.toogleLike({
+        project$Id: $id,
+        userId: userData.$id,
+      });
     } catch (error) {
-      console.log("Post card :: Error", error);
-      setHasLiked((prev) => !prev);
-      setLike((prev) => (nextLiked ? Math.max(prev - 1, 0) : prev + 1));
+      toast.error("Failed to update like");
+      console.log("Like error", error);
     }
   };
 
@@ -181,7 +178,11 @@ export function PostCard({
         </Button>
         <div className="space-x-1">
           <Button
-            onClick={handleLike}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              handleLike();
+            }}
             className="rounded-full font-semibold"
             variant={"outline"}
           >

@@ -25,8 +25,6 @@ function Post(): JSX.Element {
   const [projectImg, setProjectImg] = useState(dummyImg);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  // const [like, setLike] = useState(0);
-  // const [hasLiked, setHasLiked] = useState<boolean>(false);
   const { status, userData } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const likeState = useAppSelector((state) => state.like[id as string] || {});
@@ -140,37 +138,6 @@ function Post(): JSX.Element {
 
     img.src = url;
   }, [pageData?.link, pageData]);
-
-  useEffect(() => {
-    if (pageData && userData) {
-      // setLike(pageData.likesCount);
-      // setHasLiked(pageData.likedBy.includes(userData.$id));
-    }
-  }, [pageData, userData]);
-
-  // const handleLike = async (projectId: string, userId: string) => {
-  //   try {
-  //     if (!projectId) return;
-
-  //     setHasLiked((prev) => !prev);
-  //     setLike((prev) => (hasLiked ? prev - 1 : prev + 1));
-
-  //     await projectService.toogleLike({
-  //       project$Id: projectId,
-  //       userId,
-  //     });
-
-  //     const updatedProject = await projectService.getProject({
-  //       project$Id: projectId,
-  //     });
-  //     setLike(updatedProject.likesCount);
-  //     setHasLiked(updatedProject.likedBy.includes(userData?.$id));
-  //   } catch (error) {
-  //     setHasLiked((prev) => !prev);
-  //     setLike((prev) => (hasLiked ? prev + 1 : Math.max(prev - 1, 0)));
-  //     console.log("Like error :: handleLike", error);
-  //   }
-  // };
 
   const handleLike = async () => {
     if (!status || !userData) {

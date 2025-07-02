@@ -7,31 +7,40 @@ import { useAppDispatch, useAppSelector } from "./hooks/useStore";
 import { login, logout } from "./features/authSlice";
 import { toast } from "sonner";
 import projectService from "./components/appwrite/projectService";
-import { toggleLike } from "./features/likeSlice";
+import { setLikes } from "./features/likeSlice";
+
+type LikeState = {
+  [projectId: string]: {
+    count: number;
+    hasLiked: boolean;
+  };
+};
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { userData } = useAppSelector((state) => state.auth);
+
   useEffect(() => {
     const syncLikes = async () => {
       if (!userData) return;
 
-      const response = await projectService.listProjects(); // or only liked projects
+      const response = await projectService.listProjects();
       const likedProjects = response.documents.filter((project) =>
         project.likedBy.includes(userData.$id)
       );
 
+      const likeState: LikeState = {};
+
       likedProjects.forEach((project) => {
-        dispatch(
-          toggleLike({
-            projectId: project.$id,
-            hasLiked: true,
-            count: project.likesCount,
-          })
-        );
+        likeState[project.$id] = {
+          hasLiked: true,
+          count: project.likesCount,
+        };
       });
+
+      dispatch(setLikes(likeState));
     };
 
     syncLikes();
