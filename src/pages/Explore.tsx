@@ -1,7 +1,7 @@
 import { PostCard, SkeletonProjectCard } from "@/components";
 import commentService from "@/components/appwrite/commentService";
 import projectService from "@/components/appwrite/projectService";
-import { useAppSelector } from "@/hooks/useStore";
+// import { useAppSelector } from "@/hooks/useStore";
 import type { Models } from "appwrite";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -9,7 +9,7 @@ import { toast } from "sonner";
 function Explore() {
   const [projects, setProjects] = useState<Models.Document[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const { userData } = useAppSelector((state) => state.auth);
+  // const { userData } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     document.title = "ProjectHunt | Explore";
@@ -74,11 +74,7 @@ function Explore() {
             likes={project.likesCount || 0}
             comments={project.commentsCount || 0}
             clicks={project.clicksCount || 0}
-            postedBy={
-              userData?.$id === project.userid
-                ? userData?.name ?? "user"
-                : "user"
-            }
+            postedBy={project.postedBy}
           />
         ))}
     </div>

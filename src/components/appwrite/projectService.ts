@@ -11,6 +11,7 @@ interface ProjectCredentials {
   likedBy?: string[];
   clicksCount?: number;
   clickedBy?: string[];
+  postedBy?: string;
 }
 export class ProjectService {
   client = new Client();
@@ -26,6 +27,7 @@ export class ProjectService {
     description,
     link,
     userId,
+    postedBy,
   }: Omit<ProjectCredentials, "project$Id">) {
     let formattedLink = link.trim();
     if (!/^https?:\/\//i.test(formattedLink)) {
@@ -42,6 +44,7 @@ export class ProjectService {
           description,
           link: formattedLink,
           userid: userId,
+          postedBy,
           likesCount: 0,
           likedBy: [],
           clicksCount: 0,

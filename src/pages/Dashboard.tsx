@@ -93,11 +93,7 @@ function Dashboard() {
                 likes={project.likesCount || 0}
                 comments={project.commentsCount || 0}
                 clicks={project.clicksCount || 0}
-                postedBy={
-                  userData?.$id === project.userid
-                    ? userData?.name ?? "user"
-                    : "user"
-                }
+                postedBy={project.postedBy}
               />
             ))}
           {!loading && projects?.length === 0 && (

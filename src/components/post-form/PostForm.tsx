@@ -67,6 +67,7 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
       dbPost = await projectService.createProject({
         ...postData,
         userId: userData?.$id as string,
+        postedBy: userData?.name,
       });
     }
     if (dbPost) {
