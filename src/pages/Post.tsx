@@ -87,6 +87,7 @@ function Post(): JSX.Element {
       commentDataExecute(id);
     }
   }, [id, pageDataExecute, commentDataExecute]);
+  console.log(commentData);
 
   const { loading: addCommentLoading, execute: addCommentExecute } = useAsync(
     async (commentFormData: CommentType) => {
@@ -104,7 +105,7 @@ function Post(): JSX.Element {
     await addCommentExecute({
       ...formData,
       project$Id: id,
-      userId: pageData?.$id as string,
+      userId: userData?.$id as string,
     });
     if (commentInput) {
       console.log("first");
@@ -179,6 +180,7 @@ function Post(): JSX.Element {
 
   const isAuthor =
     pageData && userData ? pageData.userid === userData?.$id : false;
+
   return pageDataLoading ? (
     <LoadingSpinner fullPage />
   ) : (
@@ -310,7 +312,13 @@ function Post(): JSX.Element {
 
         <ul className="space-y-1">
           {commentData?.documents.map((doc) => {
-            const comment = doc as unknown as { text: string; $id: string };
+            const comment = doc as unknown as {
+              text: string;
+              $id: string;
+              userid: string;
+            };
+            const isCommentedAuthor = userData?.$id === comment.userid;
+
             return (
               <li
                 key={comment.$id}
@@ -324,7 +332,7 @@ function Post(): JSX.Element {
                       {comment?.text}
                     </p>
 
-                    {isAuthor &&
+                    {isCommentedAuthor &&
                       (deleteCommentLoading ? (
                         <LoadingSpinner size={20} />
                       ) : (
