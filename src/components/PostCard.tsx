@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import projectService from "./appwrite/projectService";
 import useAsync from "@/hooks/useAsync";
-import { toggleLike } from "@/features/likeSlice";
+import { setLikeState } from "@/features/likeSlice";
 
 interface PostCardData {
   $id: string;
@@ -47,9 +47,12 @@ export function PostCard({
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const dispatch = useAppDispatch();
-  const likeState = useAppSelector((state) => state.like[$id] || {});
-  const hasLiked = likeState.hasLiked || false;
-  const like = likeState.count || 0;
+  const likeState = useAppSelector(
+    (state) => state.like[$id] || { count: likes, hasLiked: false }
+  );
+
+  const like = likeState.count;
+  const hasLiked = likeState.hasLiked;
 
   useEffect(() => {
     if (!projectLink) return;
@@ -79,13 +82,22 @@ export function PostCard({
       return;
     }
 
-    dispatch(toggleLike({ projectId: $id }));
-
     try {
       await projectService.toogleLike({
         project$Id: $id,
         userId: userData.$id,
       });
+      const updatedProject = await projectService.getProject({
+        project$Id: $id,
+      });
+
+      dispatch(
+        setLikeState({
+          projectId: $id,
+          hasLiked: updatedProject.likedBy.includes(userData.$id),
+          count: updatedProject.likesCount,
+        })
+      );
     } catch (error) {
       toast.error("Failed to update like");
       console.log("Like error", error);

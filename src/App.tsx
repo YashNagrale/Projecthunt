@@ -27,25 +27,21 @@ function App() {
       if (!userData) return;
 
       const response = await projectService.listProjects();
-      const likedProjects = response.documents.filter((project) =>
-        project.likedBy.includes(userData.$id)
-      );
-
       const likeState: LikeState = {};
 
-      likedProjects.forEach((project) => {
+      response.documents.forEach((project) => {
         likeState[project.$id] = {
-          hasLiked: true,
+          hasLiked: project.likedBy.includes(userData.$id),
           count: project.likesCount,
         };
       });
-
       dispatch(setLikes(likeState));
     };
 
     syncLikes();
   }, [userData, dispatch]);
 
+  //-----------------------------------------------------------
   useEffect(() => {
     authService
       .getCurrentUser()

@@ -185,10 +185,10 @@ export class ProjectService {
 
   async listUserProjects(userId: string) {
     try {
-      return this.databases.listDocuments(
+      return await this.databases.listDocuments(
         config.databaseId,
         config.projectCollectionId,
-        [Query.equal("$id", userId)]
+        [Query.equal("userid", userId)]
       );
     } catch (error) {
       console.log("Appwrite service :: listUserProjects", error);

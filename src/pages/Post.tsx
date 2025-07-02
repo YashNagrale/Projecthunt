@@ -11,7 +11,7 @@ import commentService from "@/components/appwrite/commentService";
 import { toast } from "sonner";
 import { useTheme } from "@/components/theme-provider";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { toggleLike } from "@/features/likeSlice";
+import { setLikeState } from "@/features/likeSlice";
 
 type CommentType = {
   title: string;
@@ -27,9 +27,7 @@ function Post(): JSX.Element {
   const [hasError, setHasError] = useState(false);
   const { status, userData } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-  const likeState = useAppSelector((state) => state.like[id as string] || {});
-  const hasLiked = likeState.hasLiked || false;
-  const like = likeState.count || 0;
+
   const navigate = useNavigate();
 
   const {
@@ -66,6 +64,16 @@ function Post(): JSX.Element {
     loading: pageDataLoading,
     execute: pageDataExecute,
   } = useAsync(fetchProject);
+
+  const likeState = useAppSelector(
+    (state) =>
+      state.like[id as string] ?? {
+        count: pageData?.likesCount ?? 0,
+        hasLiked: pageData?.likedBy.includes(userData?.$id) ?? false,
+      }
+  );
+  const like = likeState.count;
+  const hasLiked = likeState.hasLiked;
 
   const {
     data: commentData,
@@ -145,14 +153,23 @@ function Post(): JSX.Element {
       return;
     }
 
-    dispatch(toggleLike({ projectId: id }));
-
     try {
       if (id) {
         await projectService.toogleLike({
           project$Id: id,
           userId: userData.$id,
         });
+        const updatedProject = await projectService.getProject({
+          project$Id: id,
+        });
+
+        dispatch(
+          setLikeState({
+            projectId: id,
+            hasLiked: updatedProject.likedBy.includes(userData.$id),
+            count: updatedProject.likesCount,
+          })
+        );
       }
     } catch (error) {
       toast.error("Failed to update like");
@@ -278,7 +295,6 @@ function Post(): JSX.Element {
             })}
           />
           <Button
-            // TODO: Fix needed on disabled action maybe required: true needed
             disabled={!isValid || addCommentLoading}
             type="submit"
             variant="outline"

@@ -1,6 +1,8 @@
 import { LoadingSpinner, PostCard, SkeletonProjectCard } from "@/components";
+import commentService from "@/components/appwrite/commentService";
 import projectService from "@/components/appwrite/projectService";
-import { useAppSelector } from "@/hooks/useStore";
+import { setLikes } from "@/features/likeSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { type Models } from "appwrite";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -9,43 +11,72 @@ function Dashboard() {
   const { status, userData } = useAppSelector((state) => state.auth);
   const [projects, setProjects] = useState<Models.Document[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  type LikeState = {
+    [projectId: string]: {
+      count: number;
+      hasLiked: boolean;
+    };
+  };
   useEffect(() => {
     document.title = "Project | Dashboard";
 
-    if (status && userData) {
-      setLoading(true);
-      projectService
-        .listUserProjects(userData?.$id)
-        .then((projects) => {
-          if (projects) {
-            setProjects(projects.documents);
-          }
-        })
-        .catch((error) => {
-          toast.error("Something went wrong");
-          console.log("Error :: fetching user projects", error);
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [userData, status]);
+    const fetchUserProjects = async () => {
+      if (!status || !userData) return;
+
+      try {
+        setLoading(true);
+
+        const projectsRes = await projectService.listUserProjects(userData.$id);
+
+        const projectsWithComments = await Promise.all(
+          projectsRes.documents.map(async (project) => {
+            const commentRes = await commentService.listComments({
+              project$Id: project.$id,
+            });
+
+            return {
+              ...project,
+              commentsCount: commentRes.total,
+            };
+          })
+        );
+
+        setProjects(projectsWithComments);
+
+        const likeState: LikeState = {};
+        projectsRes.documents.forEach((project) => {
+          likeState[project.$id] = {
+            hasLiked: project.likedBy.includes(userData.$id),
+            count: project.likesCount,
+          };
+        });
+
+        dispatch(setLikes(likeState));
+      } catch (error) {
+        toast.error("Something went wrong");
+        console.log("Error :: fetching user projects", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProjects();
+  }, [userData, status, dispatch]);
 
   const skeletonCount = projects?.length || 2;
 
   return (
     <main
       style={{ scrollbarWidth: "none" }}
-      className={`space-y-6 overflow-scroll ${
-        projects.length === 0 && "h-full"
-      }`}
+      className={`space-y-6 overflow-scroll h-full`}
     >
       <section
         style={{ scrollbarWidth: "none" }}
         className={`w-full overflow-y-auto h-[80%] m-0`}
       >
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 px-2 py-3 place-items-center ${
-            projects.length === 0 && "h-full"
-          }`}
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 px-2 py-3 place-items-center`}
         >
           {loading &&
             Array.from({ length: skeletonCount }).map((_, i) => (
@@ -62,7 +93,11 @@ function Dashboard() {
                 likes={project.likesCount || 0}
                 comments={project.commentsCount || 0}
                 clicks={project.clicksCount || 0}
-                postedBy={project.postedBy || "user"}
+                postedBy={
+                  userData?.$id === project.userid
+                    ? userData?.name ?? "user"
+                    : "user"
+                }
               />
             ))}
           {!loading && projects?.length === 0 && (
@@ -125,13 +160,13 @@ function Dashboard() {
                       {project?.title}
                     </td>
                     <td className="py-2 text-center">
-                      {project.clicks?.length || 0}
+                      {project.clicksCount || 0}
                     </td>
                     <td className="py-2 text-center">
-                      {project.likes?.length || 0}
+                      {project.likesCount || 0}
                     </td>
                     <td className="py-2 text-center">
-                      {project.comments?.length || 0}
+                      {project.commentsCount || 0}
                     </td>
                   </tr>
                 ))
