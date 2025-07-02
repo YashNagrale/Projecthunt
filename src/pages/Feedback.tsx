@@ -26,12 +26,20 @@ function Feedback(): JSX.Element {
   };
 
   useEffect(() => {
-    document.title = "ProjectHunt | Feedback";
+    const handleRefresh = () => {
+      fetchFeedback();
+    };
+
     fetchFeedback();
+
+    window.addEventListener("refresh-feedback", handleRefresh);
+
+    return () => window.removeEventListener("refresh-feedback", handleRefresh);
   }, []);
+
   return (
     <div>
-      <div className="p-2">{!status && <FeedbackFormAlert />}</div>
+      <div className="p-2">{status && <FeedbackFormAlert />}</div>
       <div
         className={`min-h-[200px] ${
           feedbackData.length === 0

@@ -59,7 +59,7 @@ function FeedbackCard({
 
         {isAuthor &&
           (isDeleteLoading ? (
-            <LoadingSpinner />
+            <LoadingSpinner size={20} />
           ) : (
             <Trash2
               onClick={handleDelete}

@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import useAsync from "@/hooks/useAsync";
 import feedbackService from "./appwrite/feedbackService";
 import LoadingSpinner from "./LoadingSpinner";
+import { useState } from "react";
 
 type FormPropType = {
   title: string;
@@ -25,15 +26,17 @@ type FormPropType = {
 
 export function FeedbackFormAlert() {
   const { status, userData } = useAppSelector((state) => state.auth);
+  const [open, setOpen] = useState<boolean>(false);
+
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<FormPropType>({
     mode: "onChange",
     delayError: 700,
   });
-
   const { loading, execute } = useAsync(async (feedbackData: FormPropType) => {
     return await feedbackService.createFeedback(feedbackData);
   });
@@ -41,9 +44,18 @@ export function FeedbackFormAlert() {
   const submitFeedback = async (formData: FormPropType) => {
     if (userData?.$id && userData?.email) {
       const [name, domain] = userData.email.split("@");
-      const masked =
-        name.slice(0, 2) + "*".repeat(name.length - 3) + name.slice(-1);
-      const maskedEmail = `${masked}@${domain}`;
+
+      let maskedName = name;
+      if (name.length > 3) {
+        maskedName =
+          name.slice(0, 2) + "*".repeat(name.length - 3) + name.slice(-1);
+      } else if (name.length === 3) {
+        maskedName = name[0] + "*" + name[2];
+      } else {
+        maskedName = name[0] + "*".repeat(name.length - 1);
+      }
+
+      const maskedEmail = `${maskedName}@${domain}`;
 
       await execute({
         ...formData,
@@ -51,11 +63,14 @@ export function FeedbackFormAlert() {
         userEmail: userData.email,
         userMaskedEmail: maskedEmail,
       });
+      setOpen(false);
+      window.dispatchEvent(new Event("refresh-feedback"));
+      reset();
     }
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button disabled={!status} variant="outline">
           {status ? "Submit Feedback" : "Submit Feedback (login required)"}
