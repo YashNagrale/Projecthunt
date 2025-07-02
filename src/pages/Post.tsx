@@ -2,7 +2,7 @@ import useAsync from "@/hooks/useAsync";
 import dummyImg from "../assets/dummy-img.jpg";
 import { Badge, Button, Input } from "@/components/ui";
 import { ExternalLinkIcon, Heart, Trash2 } from "lucide-react";
-import { useEffect, useState, type JSX } from "react";
+import { useCallback, useEffect, useState, type JSX } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import projectService from "@/components/appwrite/projectService";
@@ -14,10 +14,12 @@ import { useAppSelector } from "@/hooks/useStore";
 
 type CommentType = {
   title: string;
+  project$Id: string;
+  userId: string;
 };
 
 function Post(): JSX.Element {
-  const { project$Id } = useParams();
+  const { id } = useParams();
   const { theme } = useTheme();
   const [projectImg, setProjectImg] = useState(dummyImg);
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -47,36 +49,39 @@ function Post(): JSX.Element {
       navigate(`/@${userData?.name}`, { replace: true });
     }
   };
+  const fetchProject = useCallback(
+    async (id: string) => await projectService.getProject({ project$Id: id }),
+    []
+  );
+  const fetchComments = useCallback(
+    async (id: string) => await commentService.listComments({ project$Id: id }),
+    []
+  );
 
   const {
     data: pageData,
     loading: pageDataLoading,
     execute: pageDataExecute,
-  } = useAsync(async (id: string) => {
-    const project = await projectService.getProject({ project$Id: id });
-    return project;
-  });
+  } = useAsync(fetchProject);
 
   const {
     data: commentData,
     loading: commentDataLoading,
     execute: commentDataExecute,
-  } = useAsync(async (id: string) => {
-    return await commentService.listComments({ project$Id: id });
-  });
+  } = useAsync(fetchComments);
 
   useEffect(() => {
-    if (project$Id) {
-      pageDataExecute(project$Id);
-      commentDataExecute(project$Id);
+    if (id) {
+      pageDataExecute(id);
+      commentDataExecute(id);
     }
-  }, [project$Id, navigate, pageDataExecute, commentDataExecute]);
+  }, [id, pageDataExecute, commentDataExecute]);
 
   const { loading: addCommentLoading, execute: addCommentExecute } = useAsync(
     async (commentFormData: CommentType) => {
       const session = await commentService.createComment(commentFormData);
-      if (session && project$Id) {
-        await commentDataExecute(project$Id);
+      if (session && id) {
+        await commentDataExecute(id);
       }
     }
   );
@@ -84,8 +89,14 @@ function Post(): JSX.Element {
   const commentInput = document.getElementById("comment") as HTMLInputElement;
 
   const addComment = async (formData: CommentType) => {
-    await addCommentExecute(formData);
+    if (!id) return;
+    await addCommentExecute({
+      ...formData,
+      project$Id: id,
+      userId: pageData?.$id as string,
+    });
     if (commentInput) {
+      console.log("first");
       commentInput.value = "";
     }
   };
@@ -96,8 +107,9 @@ function Post(): JSX.Element {
     });
 
   const deleteComment = async (commentId: string) => {
-    if (commentId) {
+    if (commentId && id) {
       await deleteCommentExecute(commentId);
+      await commentDataExecute(id);
     }
   };
 
@@ -126,7 +138,7 @@ function Post(): JSX.Element {
 
   useEffect(() => {
     if (pageData && userData) {
-      setLike(pageData.likes.length);
+      setLike(pageData.likesCount);
       setHasLiked(pageData.likedBy.includes(userData.$id));
     }
   }, [pageData, userData]);
@@ -150,8 +162,7 @@ function Post(): JSX.Element {
   };
 
   const isAuthor =
-    pageData && userData ? pageData.userId === userData?.$id : false;
-
+    pageData && userData ? pageData.userid === userData?.$id : false;
   return pageDataLoading ? (
     <LoadingSpinner fullPage />
   ) : (
@@ -159,7 +170,7 @@ function Post(): JSX.Element {
       <div>
         <div id="img" className="relative">
           <Badge className="absolute left-2 top-2 text-center font-semibold cursor-default select-none z-10">
-            Clicks: {pageData?.clicks || 0}
+            Clicks: {pageData?.clicksCount || 0}
           </Badge>
 
           {isImageLoading && (
@@ -192,7 +203,7 @@ function Post(): JSX.Element {
               <Button
                 disabled={deletePostLoading}
                 onClick={() => {
-                  if (project$Id) deletePost(project$Id);
+                  if (id) deletePost(id);
                 }}
                 className="bg-red-800 hover:bg-red-900 cursor-pointer font-semibold"
               >
@@ -216,8 +227,8 @@ function Post(): JSX.Element {
             <Button
               id="likeBtn"
               onClick={() => {
-                if (project$Id && userData?.$id) {
-                  handleLike(project$Id, userData?.$id);
+                if (id && userData?.$id) {
+                  handleLike(id, userData?.$id);
                 }
               }}
               variant={"secondary"}
@@ -235,7 +246,7 @@ function Post(): JSX.Element {
                 variant={"secondary"}
                 className="backdrop-blur-2xl font-semibold border"
               >
-                Comment: {pageData?.comments.length || 0}
+                Comment: {commentData?.total || 0}
               </Button>
             </a>
           </div>
@@ -277,7 +288,7 @@ function Post(): JSX.Element {
             type="submit"
             variant="outline"
           >
-            Comment
+            Comment {addCommentLoading && <LoadingSpinner />}
           </Button>
         </form>
         {errors.title && (

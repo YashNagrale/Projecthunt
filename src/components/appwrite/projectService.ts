@@ -62,12 +62,16 @@ export class ProjectService {
     }: Omit<ProjectCredentials, "userId" | "project$Id">,
     project$Id: string
   ) {
+    let formattedLink = link.trim();
+    if (!/^https?:\/\//i.test(formattedLink)) {
+      formattedLink = `https://${formattedLink}`;
+    }
     try {
       return await this.databases.updateDocument(
         config.databaseId,
         config.projectCollectionId,
         project$Id,
-        { title, description, url: link }
+        { title, description, link: formattedLink }
       );
     } catch (error) {
       console.log("Appwrite service :: updateProject", error);

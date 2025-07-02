@@ -5,6 +5,7 @@ interface CommentsCredentials {
   title: string;
   project$Id: string;
   comment$Id: string;
+  userId: string;
 }
 
 export class CommentService {
@@ -16,13 +17,18 @@ export class CommentService {
     this.databases = new Databases(this.client);
   }
 
-  async createComment({ title }: Pick<CommentsCredentials, "title">) {
+  async createComment({
+    title,
+    project$Id,
+    userId,
+  }: Omit<CommentsCredentials, "comment$Id">) {
+    console.log(title, project$Id);
     try {
       return await this.databases.createDocument(
         config.databaseId,
         config.commentsCollectionId,
         ID.unique(),
-        { title }
+        { text: title, projectid: project$Id, userid: userId }
       );
     } catch (error) {
       console.log("Appwrite service :: createComment", error);
@@ -48,7 +54,7 @@ export class CommentService {
       return await this.databases.listDocuments(
         config.databaseId,
         config.commentsCollectionId,
-        [Query.equal("projectid", project$Id), Query.orderDesc("_createdAt")]
+        [Query.equal("projectid", project$Id), Query.orderDesc("$createdAt")]
       );
     } catch (error) {
       console.log("Appwrite service :: listComments", error);
