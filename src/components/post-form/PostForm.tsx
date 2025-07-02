@@ -85,7 +85,6 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
   };
 
   return (
-    // TODO: Update input values if post already exists
     <FormProvider {...methods}>
       <div className="md:flex-row flex flex-col flex-1 w-full gap-2 p-2 h-full">
         <div
@@ -104,7 +103,6 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                 Project title:
               </label>
               <Input
-                // value={post?.title}
                 type="text"
                 id="titleInput"
                 placeholder="Enter here..."
@@ -132,7 +130,6 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                 Project link:
               </label>
               <Input
-                // value={post?.link}
                 id="linkInput"
                 placeholder="Enter here..."
                 {...register("link", {
@@ -162,7 +159,6 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                 Project description:
               </label>
               <Textarea
-                // value={post?.description}
                 id="descriptionInput"
                 placeholder="Enter here..."
                 className="grow resize-y"
