@@ -7,15 +7,15 @@ import { useNavigate, useParams } from "react-router-dom";
 
 function EditPost() {
   const { userData } = useAppSelector((state) => state.auth);
-  const { project$Id } = useParams();
+  const { projectId } = useParams();
   const [post, setPost] = useState<Models.Document | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "Project | EditPost";
 
-    if (project$Id) {
-      projectService.getProject({ project$Id }).then((post) => {
+    if (projectId) {
+      projectService.getProject({ project$Id: projectId }).then((post) => {
         if (post) {
           setPost({ ...post });
         } else {
@@ -23,7 +23,7 @@ function EditPost() {
         }
       });
     }
-  }, [navigate, project$Id, userData]);
+  }, [navigate, projectId, userData]);
 
   return post ? (
     <PostForm

@@ -71,7 +71,7 @@ const router = createBrowserRouter([
         element: <Feedback />,
       },
       {
-        path: "/edit-post/:project$Id",
+        path: "/edit-post/:projectId",
         element: (
           <ProtectedRoute authentication>
             <EditPost />
