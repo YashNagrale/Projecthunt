@@ -10,7 +10,8 @@ import { LoadingSpinner } from "@/components";
 import commentService from "@/components/appwrite/commentService";
 import { toast } from "sonner";
 import { useTheme } from "@/components/theme-provider";
-import { useAppSelector } from "@/hooks/useStore";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { toggleLike } from "@/features/likeSlice";
 
 type CommentType = {
   title: string;
@@ -24,9 +25,13 @@ function Post(): JSX.Element {
   const [projectImg, setProjectImg] = useState(dummyImg);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [like, setLike] = useState(0);
-  const [hasLiked, setHasLiked] = useState<boolean>(false);
-  const { userData } = useAppSelector((state) => state.auth);
+  // const [like, setLike] = useState(0);
+  // const [hasLiked, setHasLiked] = useState<boolean>(false);
+  const { status, userData } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const likeState = useAppSelector((state) => state.like[id as string] || {});
+  const hasLiked = likeState.hasLiked || false;
+  const like = likeState.count || 0;
   const navigate = useNavigate();
 
   const {
@@ -138,26 +143,53 @@ function Post(): JSX.Element {
 
   useEffect(() => {
     if (pageData && userData) {
-      setLike(pageData.likesCount);
-      setHasLiked(pageData.likedBy.includes(userData.$id));
+      // setLike(pageData.likesCount);
+      // setHasLiked(pageData.likedBy.includes(userData.$id));
     }
   }, [pageData, userData]);
 
-  const handleLike = async (projectId: string, userId: string) => {
+  // const handleLike = async (projectId: string, userId: string) => {
+  //   try {
+  //     if (!projectId) return;
+
+  //     setHasLiked((prev) => !prev);
+  //     setLike((prev) => (hasLiked ? prev - 1 : prev + 1));
+
+  //     await projectService.toogleLike({
+  //       project$Id: projectId,
+  //       userId,
+  //     });
+
+  //     const updatedProject = await projectService.getProject({
+  //       project$Id: projectId,
+  //     });
+  //     setLike(updatedProject.likesCount);
+  //     setHasLiked(updatedProject.likedBy.includes(userData?.$id));
+  //   } catch (error) {
+  //     setHasLiked((prev) => !prev);
+  //     setLike((prev) => (hasLiked ? prev + 1 : Math.max(prev - 1, 0)));
+  //     console.log("Like error :: handleLike", error);
+  //   }
+  // };
+
+  const handleLike = async () => {
+    if (!status || !userData) {
+      toast.info("Login to like the project");
+      return;
+    }
+
+    dispatch(toggleLike({ projectId: id }));
+
     try {
-      if (!projectId) return;
-
-      setHasLiked((prev) => !prev);
-      setLike((prev) => (hasLiked ? prev - 1 : prev + 1));
-
-      await projectService.toogleLike({
-        project$Id: projectId,
-        userId,
-      });
+      if (id) {
+        await projectService.toogleLike({
+          project$Id: id,
+          userId: userData.$id,
+        });
+      }
     } catch (error) {
-      setHasLiked((prev) => !prev);
-      setLike((prev) => (hasLiked ? prev + 1 : Math.max(prev - 1, 0)));
-      console.log("Like error :: handleLike", error);
+      toast.error("Failed to update like");
+      console.log("Like error", error);
     }
   };
 
@@ -226,11 +258,7 @@ function Post(): JSX.Element {
             </a>
             <Button
               id="likeBtn"
-              onClick={() => {
-                if (id && userData?.$id) {
-                  handleLike(id, userData?.$id);
-                }
-              }}
+              onClick={handleLike}
               variant={"secondary"}
               className="font-semibold border"
             >
