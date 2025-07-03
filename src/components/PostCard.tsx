@@ -177,18 +177,18 @@ export function PostCard({
         </CardDescription>
       </CardContent>
 
-      <CardFooter className="px-1 flex justify-between">
+      <CardFooter className="px-1 flex justify-between max-[500px]:flex-col max-[500px]:gap-1 ">
         <Button
           onClick={(e) => e.stopPropagation()}
-          className="rounded-full font-semibold"
+          className="rounded-full font-semibold max-[500px]:w-full"
           variant={"outline"}
         >
           <p className="text-muted-foreground">
-            Post by:{" "}
+            Project by:{" "}
             <span className="text-secondary-foreground">@{postedBy}</span>
           </p>
         </Button>
-        <div className="space-x-1">
+        <div className="space-x-1 max-[500px]:w-full max-[500px]:flex  max-[500px]:justify-between  max-[500px]:items-center">
           <Button
             onClick={(e) => {
               e.stopPropagation();
