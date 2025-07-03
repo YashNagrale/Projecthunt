@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import authService from "./components/appwrite/auth";
 import { useAppDispatch, useAppSelector } from "./hooks/useStore";
 import { login, logout } from "./features/authSlice";
-import { toast } from "sonner";
 import projectService from "./components/appwrite/projectService";
 import { setLikes } from "./features/likeSlice";
 
@@ -48,18 +47,17 @@ function App() {
       .then((userData) => {
         if (userData) {
           dispatch(login({ userData }));
-          navigate(`/@${userData.name}`);
         } else {
           dispatch(logout());
-          navigate("/explore");
         }
       })
       .catch((error) => {
-        toast.error("Can't find user");
         console.log("Error on getting user", error);
+        dispatch(logout());
       })
       .finally(() => setLoading(false));
   }, [dispatch, navigate]);
+
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <Toaster
