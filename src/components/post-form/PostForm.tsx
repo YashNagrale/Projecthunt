@@ -108,11 +108,10 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                 id="titleInput"
                 placeholder="Enter here..."
                 {...register("title", {
-                  required: true,
-                  minLength: {
-                    value: 5,
-                    message: "Minimum 5 characters required.",
-                  },
+                  required: "Title is required",
+                  validate: (value) =>
+                    value.trim().length >= 5 ||
+                    "Minimum 5 non-space characters required",
                   maxLength: {
                     value: 100,
                     message: "Maximum 100 characters allowed.",
@@ -164,11 +163,10 @@ function PostForm({ post }: PostFormProps): React.JSX.Element {
                 placeholder="Enter here..."
                 className="grow resize-y"
                 {...register("description", {
-                  required: true,
-                  minLength: {
-                    value: 10,
-                    message: "Minimum 10 characters required.",
-                  },
+                  required: "Description is required",
+                  validate: (value) =>
+                    value.trim().length >= 10 ||
+                    "Minimum 10 non-space characters required",
                   maxLength: {
                     value: 500,
                     message: "Maximum 500 characters allowed.",
