@@ -107,7 +107,6 @@ function Post(): JSX.Element {
       userId: userData?.$id as string,
     });
     if (commentInput) {
-      console.log("first");
       commentInput.value = "";
     }
   };
@@ -285,13 +284,12 @@ function Post(): JSX.Element {
             placeholder="Leave a comment..."
             className="flex text-sm"
             {...register("title", {
-              minLength: {
-                value: 1,
-                message: "Minimum 1 characters are required.",
-              },
+              required: "Comment cannot be empty.",
+              validate: (value) =>
+                value.trim().length > 0 || "Comment must contain valid text.",
               maxLength: {
                 value: 250,
-                message: "Maximum 250 characters are required.",
+                message: "Maximum 250 characters allowed.",
               },
             })}
           />

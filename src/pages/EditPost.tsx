@@ -31,7 +31,6 @@ function EditPost() {
         title: post?.title,
         description: post?.description,
         link: post?.link,
-        // TODO: maybe cause error try changing with project$Id
         project$Id: post?.$id as string,
       }}
     />

@@ -19,7 +19,7 @@ function ProtectedRoute({
     } else if (!authentication && status !== authentication) {
       navigate(`/@${userData?.name}`);
     } else {
-      console.log("Error on protected route");
+      console.warn("Error on protected route");
     }
   }, [status, authentication, navigate, userData]);
 
