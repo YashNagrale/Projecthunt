@@ -11,6 +11,7 @@ function Dashboard() {
   const { status, userData } = useAppSelector((state) => state.auth);
   const [projects, setProjects] = useState<Models.Document[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
   const dispatch = useAppDispatch();
   type LikeState = {
     [projectId: string]: {
@@ -65,7 +66,6 @@ function Dashboard() {
   }, [userData, status, dispatch]);
 
   const skeletonCount = projects?.length || 2;
-
   return (
     <main
       style={{ scrollbarWidth: "none" }}
@@ -98,7 +98,13 @@ function Dashboard() {
             ))}
           {!loading && projects?.length === 0 && (
             <p className="text-muted-foreground py-10 px-1 col-span-full text-center text-4xl font-extrabold">
-              Looks like you haven’t shared any projects yet.
+              {userData?.name
+                ? `Welcome, ${userData.name
+                    .charAt(0)
+                    .toUpperCase()}${userData.name.slice(1)}!`
+                : "Welcome!"}
+              <br />
+              You don’t have any project
             </p>
           )}
         </div>

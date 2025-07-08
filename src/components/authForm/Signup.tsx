@@ -51,7 +51,13 @@ export default function Signup() {
   });
 
   const signup = async (formData: InputData) => {
-    await execute(formData);
+    const cleanFormData = {
+      email: formData.email.trim(),
+      password: formData.password.trim(),
+      name: formData.name.trim(),
+    };
+
+    await execute(cleanFormData);
   };
 
   return (
