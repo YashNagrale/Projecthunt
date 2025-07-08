@@ -93,11 +93,9 @@ export function FeedbackFormAlert() {
               id="feedback"
               placeholder="Type your feedback here..."
               {...register("title", {
-                required: true,
-                minLength: {
-                  value: 3,
-                  message: "Minimum 3 characters required.",
-                },
+                validate: (value) =>
+                  value.trim().length >= 3 ||
+                  "Minimum 3 non-space characters required.",
               })}
             />
             {errors.title && (
