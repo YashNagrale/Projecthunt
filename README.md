@@ -1,6 +1,6 @@
 # 🚀 ProjectHunt
 
-**ProjectHunt** is a full-stack web app where developers can post their projects, explore others, and engage through likes, comments, and views.
+**ProjectHunt** is a full-stack web app where developers can post their projects, explore others, can give likes, comments too.
 
 🔗 [Live Demo](https://projecthuntapp.vercel.app/)
 
