@@ -63,6 +63,7 @@ function Feedback(): JSX.Element {
                 userId={item.userId}
                 userEmail={item.userEmail}
                 userMaskedEmail={item.userMaskedEmail}
+                userName={item.userName}
                 onDelete={fetchFeedback}
               />
             ))}

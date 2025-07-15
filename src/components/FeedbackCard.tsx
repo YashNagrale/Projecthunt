@@ -16,6 +16,7 @@ type FeedbackCardProps = {
   title: string;
   userEmail: string;
   userMaskedEmail: string;
+  userName: string;
   feedbackId: string;
   onDelete: () => void;
 };
@@ -25,6 +26,7 @@ function FeedbackCard({
   title = "Card Title",
   userEmail = "user@email.com",
   userMaskedEmail = "usermaskedemail.com",
+  userName = "user",
   feedbackId,
   onDelete,
 }: FeedbackCardProps) {
@@ -50,7 +52,7 @@ function FeedbackCard({
       <CardHeader className="px-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="select-none w-8 h-8 rounded-full bg-foreground text-secondary flex items-center justify-center text-lg font-bold">
-            {userData?.name.charAt(0).toUpperCase() || "U"}
+            {userName?.charAt(0).toUpperCase() || "U"}
           </div>
           <CardDescription className="font-semibold break-words max-w-52 leading-none">
             {isAuthor ? userEmail : userMaskedEmail}

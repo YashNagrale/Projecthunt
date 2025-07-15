@@ -22,6 +22,7 @@ type FormPropType = {
   userId: string;
   userEmail: string;
   userMaskedEmail: string;
+  userName: string;
 };
 
 export function FeedbackFormAlert() {
@@ -62,6 +63,7 @@ export function FeedbackFormAlert() {
         userId: userData.$id,
         userEmail: userData.email,
         userMaskedEmail: maskedEmail,
+        userName: userData.name,
       });
       setOpen(false);
       window.dispatchEvent(new Event("refresh-feedback"));
@@ -94,7 +96,7 @@ export function FeedbackFormAlert() {
               placeholder="Type your feedback here..."
               {...register("title", {
                 validate: (value) =>
-                  value.trim().length >= 3 ||
+                  value?.trim().length >= 3 ||
                   "Minimum 3 non-space characters required.",
               })}
             />
