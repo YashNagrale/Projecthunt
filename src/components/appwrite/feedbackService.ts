@@ -7,6 +7,7 @@ type FeedbackServiceCredentials = {
   feedbackId: string;
   userEmail: string;
   userMaskedEmail: string;
+  userName: string;
 };
 
 export class FeedbackService {
@@ -24,13 +25,14 @@ export class FeedbackService {
     userId,
     userEmail,
     userMaskedEmail,
+    userName,
   }: Omit<FeedbackServiceCredentials, "feedbackId">) {
     try {
       return await this.databases.createDocument(
         config.databaseId,
         config.feedbackCollectionId,
         ID.unique(),
-        { title, userId, userEmail, userMaskedEmail }
+        { title, userId, userEmail, userMaskedEmail, userName }
       );
     } catch (error) {
       console.log("Appwrite service :: createFeedback", error);
