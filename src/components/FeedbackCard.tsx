@@ -26,7 +26,7 @@ function FeedbackCard({
   title = "Card Title",
   userEmail = "user@email.com",
   userMaskedEmail = "usermaskedemail.com",
-  userName = "user",
+  userName = "User",
   feedbackId,
   onDelete,
 }: FeedbackCardProps) {
